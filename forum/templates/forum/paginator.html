@@ -1,0 +1,15 @@
+<div id="pagebar">
+    {% if 1 not in pages_list %}
+    <a class="button" href="?page=1">First</a>
+    {% endif %}
+    {% for n in pages_list %}
+    {% if num_page != n %}
+    <a class="button" href="?page={{ n }}">{{ n }}</a>
+    {% else %}
+    <span>{{ n }}</span>
+    {% endif %}
+    {% endfor %}
+    {% if last_page not in pages_list %}
+    <a class="button" href="?page={{ last_page }}">Last ({{ last_page }})</a>
+    {% endif %}
+</div>

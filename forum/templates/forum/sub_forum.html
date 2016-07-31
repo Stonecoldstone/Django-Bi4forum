@@ -1,0 +1,111 @@
+{% extends "forum/main_page.html" %}
+{% block title %}{{ sub.title }}{% endblock %}
+{% block head %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css'%}"/>
+{% endblock %}
+{% block links %}
+/<a class="secondary" href="{% url 'forum:category' sub.category.id %}">{{ sub.category.title }}</a>
+{% endblock %}
+{% block body %}
+<div id="body">
+<h1>{{ sub.title }}</h1>
+{% if request.user.is_authenticated %}
+<div id="add"><a class="button" href="{% url 'forum:new_thread' sub.id %}">New thread</a></div>
+{% endif %}
+
+    {% if attach_threads %}
+    <div class="h3">Attached</div>
+<ul class="attached">
+    {% for t in attach_threads %}
+    <li class="thread">
+        {# <div class="content"> #}
+        <div class="thread">
+            <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
+        </div>
+        <div class="pages">
+        {% for p in t.thread_pages %}
+        <a href="{% url 'forum:thread' t.id %}?page={{ p }}">{{ p }}</a>
+        {% endfor %}
+        </div>
+        <div class="posts">Posts: {{ t.posts_num }}</div>
+        <div class="pic">
+            <img {% if t.last_post.user.userprofile.avatar %}
+                 src="{{ t.last_post.user.userprofile.avatar.url }}"
+                 {% else %}
+                 {% load staticfiles %}
+                 src="{% static 'avatar.jpg' %}"
+                 {% endif %}
+                 width="30px" height="30px"/>
+        </div>
+        <div class="threadinfo">
+            <a href="{{ t.last_post.get_absolute_url }}">{{ t.last_post.pub_date }}</a> by
+            <a href="{% url 'forum:profile' t.last_post.user.id %}">{{ t.last_post.user.username }}</a>
+        </div>
+            {# </div> #}
+    </li>
+    {% endfor %}
+</ul>
+    {% endif %}
+    <div class="h3">Threads</div>
+<ul class="unattached">
+    {% for t in threads %}
+    <li class="thread">
+        {# <div class="content"> #}
+        <div class="thread">
+            <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
+        </div>
+        <div class="pages">
+        {% for p in t.thread_pages %}
+        <a href="{% url 'forum:thread' t.id %}?page={{ p }}">{{ p }}</a>
+        {% endfor %}
+            {% if t.last_page not in t.thread_pages %}
+            ...<a href="{% url 'forum:thread' t.id %}?page={{ t.last_page }}">
+               {{ t.last_page }}
+            </a>
+            {% endif %}
+        </div>
+        <div class="posts">Posts: {{ t.posts_num }}</div>
+        <div class="pic">
+            <img
+                    {% if t.last_post.user.userprofile.avatar %}
+                    src="{{ t.last_post.user.userprofile.avatar.url }}"
+                    {% else %}
+                    {% load staticfiles %}
+                    src="{% static 'avatar.jpg' %}"
+                    {% endif %}
+                    width="30px" height="30px"/>
+        </div>
+        <div class="threadinfo">
+            <a href="{{ t.last_post.get_absolute_url }}">{{ t.last_post.pub_date }}</a> by
+            <a href="{% url 'forum:profile' t.last_post.user.id %}">{{ t.last_post.user.username }}</a>
+        </div>
+            {# </div> #}
+    </li>
+    {% endfor %}
+</ul>
+</div>
+{% comment %}
+<div id="pagebar">
+    {% if pages_list %}
+    {% if 1 not in pages_list %}
+    <a class="button" href="{% url 'forum:sub_forum' sub.id 1 %}">First</a>
+    {% endif %}
+    {% for n in pages_list %}
+    {% if page_num != n %}
+    <a class="button" href="{% url 'forum:sub_forum' sub.id n %}">{{ n }}</a>
+    {% else %}
+    <span>{{ n }}</span>
+    {% endif %}
+    {% endfor %}
+    {% if last_page not in pages_list %}
+    <a class="button" href="{% url 'forum:sub_forum' sub.id last_page %}">Last ({{ last_page }})</a>
+    {% endif %}
+    {% else %}
+    <span>1</span>
+    {% endif %}
+</div>
+{% endcomment %}
+{% include 'forum/paginator.html' %}
+{% endblock %}
+

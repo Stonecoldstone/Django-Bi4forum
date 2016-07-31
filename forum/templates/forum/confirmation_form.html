@@ -1,0 +1,4 @@
+<form action="{% url url %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Click to resend a confirmation mail"/>
+</form>

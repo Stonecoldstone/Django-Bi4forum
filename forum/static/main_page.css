@@ -1,0 +1,135 @@
+body {
+background-color:black;
+color:white;
+}
+ul.subforum {
+list-style-type:none;
+margin: 0 30px 5% 10px;
+padding: 0;
+width: 100%;
+border: 15px solid orange;
+border-collapse:collapse;
+}
+ul.subforum li {
+border: 3px solid orange;
+border-collapse:collapse;
+padding: 10px 0 10px 2%;
+}
+div.content {
+width: 100%;
+}
+div.stats, div.lastthread, div.subforum {
+display: inline-block;
+vertical-align:top;
+}
+p {
+line-height:1.4;
+}
+p.subtitle {
+font-size: 18px;
+}
+
+p.lastthread a {
+font-weight: normal;
+white-space: nowrap;
+overflow: hidden;
+display: inline-block;
+width: 160px;
+font-size: 16px;
+text-overflow: ellipsis;
+}
+.subdescr {
+font-size: 14px;
+}
+div.stats, div.lastthread {
+font-size: 14px;
+}
+div.subforum {
+width:40%;
+height: 100px;
+}
+div.lastthread {
+margin-left: 12%;
+height: 100px;
+padding-top: 0px;
+}
+div.stats {
+width:auto;
+margin-left: 10%;
+height: 92px;
+padding-top: 8px;
+}
+div.list {
+width: 65%;
+}
+a:link {
+font-weight:bold;
+text-decoration:none;
+color:orange;
+}
+p.history {
+margin-left: 10px;
+}
+p.history a {
+font-weight: normal;
+}
+a:visited {
+color:orange;
+}
+a:hover {
+color:rgb(147, 55, 237);
+}
+h2 a, h3 a {
+color:black;
+display:block;
+width: 98%;
+margin: 2% 30px 0 10px;
+padding-left: 2%;
+background-color: orange;
+border: 15px solid orange;
+}
+h2 a:visited, h3 a:visited {
+color:black;
+}
+h2 a:hover, h3 a:hover {
+background-color:rgb(147, 55, 237);
+border:15px solid rgb(147, 55, 237);
+border-radius: 1px;
+}
+ul.options {
+list-style-type: none;
+display: inline-block;
+padding:0;
+float:right;
+}
+div.header {
+height: 60px;
+margin-right: 2%;
+}
+ul.options li {
+float:left;
+height: 35px;
+padding: 0px 10px 0px;
+margin-left: 15px;
+}
+
+li#profile a {
+vertical-align: top;
+}
+img {
+border: 3px groove rgb(147, 55, 237);
+border-radius: 1px;
+}
+a.button, input[type=submit] {
+display: inline-block;
+padding: 3px 8px;
+border: 2px solid orange;
+border-radius: 1px;
+background-color: orange;
+color: black;
+}
+a.button:hover, input[type=submit]:hover {
+background-color: rgb(147, 55, 237);
+border-color: rgb(147, 55, 237);
+transition: 0.3s;
+}

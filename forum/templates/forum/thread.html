@@ -1,0 +1,51 @@
+{% extends "forum/main_page.html" %}
+{% block title %} {{ thread.thread_title }} {% endblock %}
+{% block head %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'thread.css' %}"/>
+{% endblock %}
+{% block links %}
+/<a href="{% url 'forum:category' thread.subforum.category.id %}">{{ thread.subforum.category.title }}</a>/
+<a href="{% url 'forum:sub_forum' thread.subforum.id %}?page=1">{{ thread.subforum.title }}</a>
+{% endblock %}
+{% block body %}
+<a href="{% url 'forum:sign_up' %}">Нажми сюда</a>
+<div id="body">
+<h1>{{ thread.thread_title }}</h1>
+<ul class="unattached">
+{% for p in posts %}
+    <li class="thread">
+        <div class="profile">
+            <img {% if p.user.userprofile.avatar %}
+     src="{{ p.user.userprofile.avatar.url }}"
+     {% else %}
+     src="{% static 'avatar.jpg' %}"
+     {% endif %}
+/><br/>
+<a class="nick" href="{% url 'forum:profile' p.user.id %}">{{ p.user.username }}</a><br/>
+            <a class="messages" href="http://hellkeeper.net/images/tutoriaux/terrainu2/terrainu26.jpg">Messages: {{ p.user.post_set.count }}</a>
+            </div>
+        <div class="message">
+<span class="date" id="{{ p.id }}"><a href="#{{ p.id }}">{{ p.pub_date }}</a></span>
+<p>{{ p.full_text|linebreaksbr }}</p><br/>
+            {% if p.user.userprofile.signature %}
+            <p class="sign">{{ p.user.userprofile.signature }}</p>
+            {% endif %}
+        </div>
+        </li>
+{% endfor %}
+    </ul>
+{% if request.user.is_authenticated and request.user.is_active %}
+<form id="post" action="{% url 'forum:thread' thread.id %}" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.full_text.errors }}
+    {{ form.full_text.label_tag }}<br/>
+    {{ form.full_text }}<br/>
+    <input type="submit" value="Submit"/>
+</form>
+    </div>
+{% endif %}
+{% include 'forum/paginator.html' %}
+{% endblock %}

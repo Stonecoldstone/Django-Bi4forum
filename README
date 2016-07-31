@@ -1,0 +1,3 @@
+have to make some forum functions available only to active users - seems like completed
+have to remind users about email confirmation with AJAX instead of views and templates
+have to fix all forms so there's no broken tags and make them uniform.

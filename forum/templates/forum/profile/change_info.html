@@ -1,0 +1,11 @@
+{% extends 'forum/profile/profile.html' %}
+{% block title %}{{ user.username }} | Change information{% endblock %}
+{% block info %}
+<form action="{% url 'forum:change_info' %}" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+        <td><input type="submit"/></td>
+    </table>
+</form>
+{% endblock %}

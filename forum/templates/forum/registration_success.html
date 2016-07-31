@@ -1,0 +1,7 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Registered{% endblock %}
+{% block body %}
+<p>You have successfully registered! Confirmation link has been sent to your email address: {{ request.user.email }}</p>
+{% include 'forum/confirmation_form.html' with url='forum:registration_success' %}
+<p><a href="{{ redirect_to }}">Please click on this link or wait for automatic redirection</a></p>
+{% endblock %}

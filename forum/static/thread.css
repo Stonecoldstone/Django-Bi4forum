@@ -1,0 +1,69 @@
+h1 {
+margin: 0 10px 15px 10px;
+}
+.profile, .message {
+display: inline-block;
+margin: 5px;
+}
+.message {
+margin-top: 6px;
+min-height: 204px;
+vertical-align: top;
+border-bottom: 1px solid orange;
+width: 80%;
+word-break: normal;
+text-align: justify;
+}
+.message a {
+font-weight: normal;
+font-size: 12px;
+}
+p.sign {
+border-top: 1px solid orange;
+padding-top: 5px;
+}
+.profile {
+text-align: center;
+}
+.profile img, .profile a {
+display: inline-block;
+margin-bottom: 8px;
+}
+a.nick {
+font-size: 18px;
+}
+a.messages {
+font-weight: normal;
+font-size: 14px;
+}
+span.date {
+padding: 1px 4px;
+border: 1px solid white;
+background-color: black;
+}
+
+#post textarea {
+border: 3px solid orange;
+border-radius: 1px;
+color: white;
+background-color: rgb(20, 20, 20);
+font-size: 16px;
+width: 98%;
+padding: 10px;
+resize: none;
+}
+#post textarea:focus {
+border-color: rgb(147, 55, 237);
+transition: 0.3s;
+}
+#post {
+margin: 30px 10px;
+}
+input[type=submit] {
+margin-top: 7px;
+font-size: 18px;
+}
+ul.errorlist {
+list-style-type: none;
+color: red;
+}

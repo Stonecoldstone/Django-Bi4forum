@@ -1,0 +1,13 @@
+{% extends 'forum/profile/profile.html' %}
+{% block title %}{{ user.username }} | Change Email{% endblock %}
+{% block info %}
+<p>Current Email: {{ user.email }}</p>
+<form action="{% url 'forum:change_email' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Confirm"/>
+</form>
+{% if sent %}
+<p>The mail has been sent to {{ user.userkey.email }}</p>
+{% endif %}
+{% endblock %}

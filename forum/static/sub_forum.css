@@ -1,0 +1,107 @@
+div.threads {
+}
+ul.attached {
+list-style-type: none;
+margin: 0 10px 30px;
+padding: 0;
+border: 3px solid orange;
+border-collapse: collapse;
+}
+ul.unattached {
+list-style-type: none;
+margin: 0 10px;
+padding: 0;
+border: 3px solid orange;
+border-collapse: collapse;
+}
+h1 {
+margin: 0 10px;
+}
+li.thread {
+border-bottom: 1px solid orange;
+border-collapse: collapse;
+padding: 5px 10px;
+}
+div.h3 {
+width: 100%%;
+background-color: rgb(147, 55, 237);
+color: black;
+margin: 0 10px 3px;
+padding: 10px 12px;
+font-weight: bold;
+font-size: 17px;
+}
+div.thread, div.pages, div.posts, div.threadinfo, div.pic {
+display: inline-block;
+vertical-align: middle;
+}
+div.thread {
+width: 30%;
+}
+div.pages {
+margin-left: 10%;
+width: 90px;
+}
+div.posts {
+width: 120px;
+margin-left: 5%;
+}
+div.pic {
+margin-left: 6%;
+}
+
+div {
+word-break: break-all;
+}
+
+div.threadinfo a {
+font-weight: normal;
+}
+div.pages a {
+font-size: 12px;
+}
+
+html, body, #body{
+height: 100%;
+}
+body > #body {
+height: auto;
+min-height: 100%;
+}
+
+
+#pagebar {
+clear: both;
+position: relative;
+margin-top: 15px;
+margin-bottom: 20px;
+text-align: center;
+height: 20px;
+z-index: 10;
+}
+
+a.button, span {
+display: inline-block;
+border: 2px solid orange;
+border-radius: 1px;
+background-color: orange;
+color: black;
+}
+span {
+display: inline-block;
+padding: 3px 5px;
+border: 2px solid rgb(147, 55, 237);
+border-radius: 1px;
+background-color: rgb(147, 55, 237);
+/* font-weight: bold;*/
+color: black;
+}
+a.button:hover {
+background-color: rgb(147, 55, 237);
+border-color: rgb(147, 55, 237);
+}
+#add a {
+margin: 10px 10px 15px;
+font-size: 18px;
+padding: 5px 8px;
+}

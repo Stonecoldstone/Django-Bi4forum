@@ -1,0 +1,9 @@
+{% extends 'forum/profile/profile.html' %}
+{% block title %}{{ user.username }} | Change avatar{% endblock %}
+{% block info %}
+<form enctype="multipart/form-data" action="{% url 'forum:change_avatar' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit"/>
+</form>
+{% endblock %}

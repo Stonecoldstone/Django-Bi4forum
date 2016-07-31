@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+        <html lang="en">
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main_page.css' %}"/>
+
+    <title>{% block title %}My forum{% endblock %} </title>
+    <meta charset="UTF-8"/>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+<div class="header">
+{% if not request.user.is_authenticated %}
+<ul class="options">
+    <li id="signup"><a class="button" href="{% url 'forum:sign_up' %}?next={{ request.path }}">Sign up</a></li>
+    <li id="login"><a class="button" href="{% url 'forum:login' %}?next={{ request.path }}">Log in</a></li>
+</ul>
+{% else %}
+<ul class="options">
+    <li id="logout"><a class="button" href="{% url 'forum:logout' %}?next={{ request.path }}">Log out</a></li>
+<li id="profile">
+    <img {% if request.user.userprofile.avatar %}
+            src="{{ request.user.userprofile.avatar.url }}"
+            {% else %}
+            src="{% static 'avatar.jpg' %}"
+             {% endif %} width="30px" height="30px"/>
+    <a class="button" href="{% url 'forum:profile' %}">{{ request.user.username }}</a>
+</li>
+</ul>
+{% endif %}
+    </div>
+<p class="history"><a href="{% url 'forum:main_page' %}">Main page</a>{% block links %}{% endblock %}</p>
+{% block body %}
+    {% for c in cat %}
+<div class="list">
+<h2><a class="cat" href="{% url 'forum:category' c.id %}">{{ c.title }}</a></h2>
+    {% if c.subforum_set.all %}
+<ul class="subforum">
+    {% for s in sub %}
+    {% if s.category == c %}
+    <li class="subforum">
+        <div class="content">
+    <div class="subforum">
+        <p class="subtitle"><a href="{% url 'forum:sub_forum' s.id %}?page=1">{{ s.title }}</a><br/>
+        <span class="subdescr">{{ s.description }}</span></p>
+    </div>
+    <div class="stats"><p>Threads: {{ s.thread_count }}<br/>Posts: {{ s.post_count }}</p></div>
+    {% if s.last_thread %}
+        <div class="lastthread">
+            <p class="lastthread"><a href="{% url 'forum:thread' s.last_thread.id %}?page=1">{{ s.last_thread.thread_title }}</a><br/>
+            <img src="{% if s.last_post.user.userprofile.avatar %}
+            {{ s.last_post.user.userprofile.avatar.url }}
+            {% else %}
+            {% static 'avatar.jpg' %}
+             {% endif %}" width="30px" height="30px"/>
+            <a class="secondary" href="{% url 'forum:profile' s.last_post.user.id %}">{{ s.last_post.user.username }}</a><br/>
+            {{ s.last_post.pub_date|date:"d/m/y h:i" }}</p>
+        </div>
+    {% endif %}
+            </div>
+        </li>
+    {% endif %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+    {% endfor %}
+{% endblock %}
+</body>
+</html>

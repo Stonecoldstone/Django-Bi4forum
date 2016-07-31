@@ -1,0 +1,7 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Activation required{% endblock %}
+{% block body %}
+<p>Please confirm your email to make this page available</p>
+{% include 'forum/confirmation_form.html' with url='forum:activation_required' %}
+<a href="{% url 'forum:main_page' %}">Return to the main page</a>
+{% endblock %}

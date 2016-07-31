@@ -1,0 +1,6 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Email confirmed{% endblock %}
+{% block body %}
+<p>{{ user.username }}, you have confirmed your email!</p>
+<a href="{{ redirect_to }}">Please click on this link or wait for automatic redirection</a>
+{% endblock %}
