@@ -74,7 +74,7 @@ class ThreadPostAbstract(models.Model):
 
 
 class Thread(ThreadPostAbstract):
-    thread_title = models.CharField(max_length=200)
+    thread_title = models.TextField(max_length=70)
     subforum = models.ForeignKey(SubForum, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
     post_add_date = models.DateTimeField(default=timezone.now)
@@ -106,9 +106,9 @@ class Post(ThreadPostAbstract):
 
     def get_absolute_url(self):
         thread_id = self.thread.id
-        return '{0}?postid={1}#{1}'.format(
-            reverse('forum:thread', args=(thread_id,)), self.id
-        )
+        return '{0}?postid={1}#{1}'.\
+            format(reverse('forum:thread', args=(thread_id,)), self.id)
+
     def print_profile(self):
         return self.full_text[:25]
 
@@ -120,8 +120,9 @@ class Post(ThreadPostAbstract):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    signature = models.TextField(default='')
-    avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
+    signature = models.TextField(default='', blank=True, null=True)
+    avatar = models.ImageField(max_length=200, upload_to='avatars', blank=True,
+                               null=True)
 
 class UserKey(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

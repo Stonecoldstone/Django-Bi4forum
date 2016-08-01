@@ -1,4 +1,3 @@
-import math
 import io
 from PIL import Image
 from django.core.files import File
@@ -8,15 +7,14 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
-import sys
+import re
 
-def pages(content_on_page, page_num, content_num):
-    index = page_num * content_on_page
-    previndex = (page_num - 1) * content_on_page
-    range_val = math.ceil((content_num / content_on_page) + 1)
-    page_list = list(range(1, range_val)) or [1]
-    return index, previndex, page_list
+# def pages(content_on_page, page_num, content_num):
+#     index = page_num * content_on_page
+#     previndex = (page_num - 1) * content_on_page
+#     range_val = math.ceil((content_num / content_on_page) + 1)
+#     page_list = list(range(1, range_val)) or [1]
+#     return index, previndex, page_list
 
 
 def resize(size, prefix='', img=None, bytes=None):
@@ -100,10 +98,65 @@ def send_confirmation(request, user, email=None, message=default_msg):
     send_mail(subject, message, settings.EMAIL_HOST_USER, [email], fail_silently=False)
 
 
+# regexp functions for thread/post formatting:
+def size_repl(match):
+    content = match.group('content')
+    size = match.group('size')
+    try:
+        size = int(size)
+        if 9 < size < 41:
+            repl = r'<span style="font-size:%dpx">%s</span>' % (size, content)
+            return repl
+        else:
+            raise ValueError
+    except ValueError:
+        return content
 
-# functions for email confirmation:
-# def activate_account(user):
-#
+
+def color_repl(match):
+    color_list = ['red', 'green', 'blue', 'white', 'orange', 'purple', 'black']
+    color = match.group('color')
+    content = match.group('content')
+    if color in color_list:
+        repl = r'<span style="color:%s">%s</span>' % (color, content)
+    else:
+        repl = content
+    return repl
 
 
+reg_list = [
+    [r'\[b\](?P<content>.*?)\[/b\]', r'<b>\g<content></b>'],
+    [r'\[i\](?P<content>.*?)\[/i\]', r'<i>\g<content></i>'],
+    [
+        r'\[lt\](?P<content>.*?)\[/lt\]',
+        r'<span style="text-decoration:line-through">\g<content></span>'
+    ],
+    [
+        r'\[u\](?P<content>.*?)\[/u\]',
+        r'<span style="text-decoration:underline">\g<content></span>'
+    ],
+    [r'\[center\](?P<content>.*?)\[/center\]', r'<p style="text-align:center">\g<content></p>'],
+    [r'\[a=(?P<href>.*?)\](?P<content>.*?)\[/a\]', r'<a href="\g<href>">\g<content></a>'],
+    [r'\[img\](?P<content>.*?)\[/img\]', r'<img src="\g<content>" alt="Image"/>'],
+    [
+        r'\[video\](?P<content>.*?)\[/video\]',
+        (r'<video width="560" height="420" controls>'
+         '<source src="\g<content>" type=video/webm>'
+         '<source src="\g<content>" type=video/ogg>'
+         '<source src="\g<content>" type=video/mp4>'
+         'Your browser does not support the video tag.'
+         '</video>')
+    ],
+    [r'\[size=(?P<size>.*?)\](?P<content>.*?)\[/size\]', size_repl],
+    [r'\[color=(?P<color>.*?)\](?P<content>.*?)\[/color\]', color_repl],
+    [r'\[q\](?P<content>.*?)\[/q\]', r'<blockquote>\g<content></blockquote>'],
+    [r'\[spoiler\](?P<content>.*?)\[/spoiler\]', r'Not implemented yet: spoiler'],
+]
+
+
+def replace_tags(string):
+    if '[' in string and ']' in string:
+        for pattern, repl in reg_list:
+            string = re.sub(pattern, repl, string, (re.DOTALL | re.IGNORECASE))
+    return string
 

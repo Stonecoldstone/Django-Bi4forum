@@ -1,23 +1,20 @@
 body {
 background-color:black;
 color:white;
+width: 97%;
 }
 ul.subforum {
 list-style-type:none;
-margin: 0 30px 5% 10px;
+margin: 0 1% 5% 1%;
 padding: 0;
-width: 100%;
-border: 15px solid orange;
-border-collapse:collapse;
+
 }
 ul.subforum li {
 border: 3px solid orange;
-border-collapse:collapse;
-padding: 10px 0 10px 2%;
+border-top:none;
+padding: 13px 0 10px 2%;
 }
-div.content {
-width: 100%;
-}
+
 div.stats, div.lastthread, div.subforum {
 display: inline-block;
 vertical-align:top;
@@ -49,7 +46,7 @@ width:40%;
 height: 100px;
 }
 div.lastthread {
-margin-left: 12%;
+width: 200px;
 height: 100px;
 padding-top: 0px;
 }
@@ -60,7 +57,7 @@ height: 92px;
 padding-top: 8px;
 }
 div.list {
-width: 65%;
+width: 98%;
 }
 a:link {
 font-weight:bold;
@@ -68,7 +65,7 @@ text-decoration:none;
 color:orange;
 }
 p.history {
-margin-left: 10px;
+margin-left: 1%;
 }
 p.history a {
 font-weight: normal;
@@ -79,22 +76,19 @@ color:orange;
 a:hover {
 color:rgb(147, 55, 237);
 }
-h2 a, h3 a {
-color:black;
+li.header {
 display:block;
-width: 98%;
-margin: 2% 30px 0 10px;
-padding-left: 2%;
 background-color: orange;
-border: 15px solid orange;
 }
-h2 a:visited, h3 a:visited {
-color:black;
+li.header a {
+padding-top: 3px;
+display:block;
+font-size: 22px;
+color: black
 }
-h2 a:hover, h3 a:hover {
+li.header:hover {
 background-color:rgb(147, 55, 237);
-border:15px solid rgb(147, 55, 237);
-border-radius: 1px;
+border-color: rgb(147, 55, 237);
 }
 ul.options {
 list-style-type: none;
@@ -120,6 +114,8 @@ img {
 border: 3px groove rgb(147, 55, 237);
 border-radius: 1px;
 }
+
+/* Links that look like buttons styling */
 a.button, input[type=submit] {
 display: inline-block;
 padding: 3px 8px;
@@ -132,4 +128,25 @@ a.button:hover, input[type=submit]:hover {
 background-color: rgb(147, 55, 237);
 border-color: rgb(147, 55, 237);
 transition: 0.3s;
+}
+
+/* Textarea form styling */
+textarea, input[type=text] {
+border: 3px solid orange;
+border-radius: 1px;
+color: white;
+background-color: rgb(20, 20, 20);
+font-size: 16px;
+width: 70%;
+padding: 10px;
+resize: none;
+}
+textarea:focus, input[type=text]:focus {
+border-color: rgb(147, 55, 237);
+transition: 0.3s;
+}
+/* Form errors styling */
+.errorlist {
+list-style-type: none;
+color: red;
 }

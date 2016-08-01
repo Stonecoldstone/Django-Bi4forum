@@ -11,6 +11,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic.list import ListView
 from django.conf import settings
+from django.utils import html
 
 # def main_page(request, cat=None, template='forum/main_page.html'):
 #     if cat is None:
@@ -120,6 +121,8 @@ def thread(request, thread_id):
         form = forms.Post(request.POST)
         if form.is_valid():
             full_text = form.cleaned_data['full_text']
+            full_text = html.escape(full_text)
+            full_text = functions.replace_tags(full_text)
             post = Post(user=user, full_text=full_text, thread=thread)
             post.save()
             return HttpResponseRedirect(post.get_absolute_url())
@@ -159,24 +162,17 @@ def thread(request, thread_id):
 def sign_up(request, redirect_field_name='next'):
     redirect_to = request.POST.get(redirect_field_name,
                                    (request.GET.get(redirect_field_name, '')))
-    # if request.user.is_authenticated():
-    #     return HttpResponseRedirect(redirect_to)
     form = forms.Registration(auto_id=True)
     if request.method == 'POST':
         form = forms.Registration(request.POST, auto_id=True)
         if form.is_valid():
-            del form.cleaned_data['confirm_password']
-            user = get_user_model()
-            args_dict = form.cleaned_data
-            args_dict['is_active'] = False
-            user.objects.create_user(**args_dict)
-            user = user.objects.get(username=form.cleaned_data['username'])
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            cd = form.cleaned_data
             UserProfile.objects.create(user=user)
             functions.send_confirmation(request, user)
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password']
-            )
+            user = authenticate(username=cd['username'], password=cd['password2'])
             auth_login(request, user)
             return HttpResponseRedirect(reverse('forum:registration_success'))
     context = {'form': form, 'redirect_to': redirect_to}
@@ -222,10 +218,8 @@ def activation_required(request):
 
 
 @decorators.login_required
-@decorators.user_passes_test(
-    functions.active, login_url='forum:activation_required',
-    redirect_field_name=None
-)
+@decorators.user_passes_test(functions.active, login_url='forum:activation_required',
+                             redirect_field_name=None)
 def new_thread(request, sub_id):
     form = forms.NewThread(auto_id=True)
     if request.method == 'POST':
@@ -235,14 +229,11 @@ def new_thread(request, sub_id):
             full_text = form.cleaned_data['full_text']
             user = request.user
             subforum = SubForum.objects.get(id=sub_id)
-            thread = Thread(
-                user=user, thread_title=thread_title,
-                subforum=subforum
-            )
+            thread = Thread(user=user, thread_title=thread_title,
+                            subforum=subforum)
             thread.save()
-            post = Post(
-                user=user, full_text=full_text, thread=thread, is_thread=True
-            )
+            post = Post(user=user, full_text=full_text, thread=thread,
+                        is_thread=True)
             post.save()
             return HttpResponseRedirect(reverse('forum:thread', args=(thread.id, 1)))
 
@@ -252,9 +243,9 @@ def new_thread(request, sub_id):
 
 @decorators.user_passes_test(functions.is_auth, login_url='forum:profile', redirect_field_name=None)
 def login(request, **kwargs):
-    return auth_views.login(
-        request, authentication_form=forms.AuthenticationFormSub, **kwargs
-    )
+    return auth_views.login(request,
+                            authentication_form=forms.AuthenticationFormSub,
+                            **kwargs)
 
 #
 # def post_edit(request, post_id):
@@ -304,10 +295,8 @@ def profile(request, user_id=None):
 
 
 @decorators.login_required
-@decorators.user_passes_test(
-    functions.active, login_url='forum:activation_required',
-    redirect_field_name=None
-)
+@decorators.user_passes_test(functions.active, login_url='forum:activation_required',
+                             redirect_field_name=None)
 def change_avatar(request):
     form = forms.File()
     user = request.user
@@ -326,10 +315,8 @@ def change_avatar(request):
 
 
 @decorators.login_required
-@decorators.user_passes_test(
-    functions.active, login_url='forum:activation_required',
-    redirect_field_name=None
-)
+@decorators.user_passes_test(functions.active, login_url='forum:activation_required',
+                             redirect_field_name=None)
 def change_info(request):
     user = request.user
     user_profile = user.userprofile
@@ -364,9 +351,8 @@ def change_email(request):
                 userkey = UserKey(user=user, email=form.cleaned_data['new_email'])
             #user.userkey.email = form.cleaned_data['new_email']
             userkey.save()
-            functions.send_confirmation(
-                request, user, userkey.email, functions.email_change_msg
-            )
+            functions.send_confirmation(request, user, userkey.email,
+                                        functions.email_change_msg)
             #return HttpResponseRedirect(reverse('forum:change_profile'))
             sent = True
     else:

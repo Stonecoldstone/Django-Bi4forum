@@ -1,5 +1,5 @@
 h1 {
-margin: 0 10px 15px 10px;
+margin: 0 1% 15px;
 }
 .profile, .message {
 display: inline-block;
@@ -16,6 +16,8 @@ text-align: justify;
 }
 .message a {
 font-weight: normal;
+}
+.message>span>a {
 font-size: 12px;
 }
 p.sign {
@@ -42,28 +44,10 @@ border: 1px solid white;
 background-color: black;
 }
 
-#post textarea {
-border: 3px solid orange;
-border-radius: 1px;
-color: white;
-background-color: rgb(20, 20, 20);
-font-size: 16px;
-width: 98%;
-padding: 10px;
-resize: none;
-}
-#post textarea:focus {
-border-color: rgb(147, 55, 237);
-transition: 0.3s;
-}
 #post {
 margin: 30px 10px;
 }
 input[type=submit] {
 margin-top: 7px;
 font-size: 18px;
-}
-ul.errorlist {
-list-style-type: none;
-color: red;
 }

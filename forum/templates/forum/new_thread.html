@@ -4,7 +4,7 @@
 <form action="{% url 'forum:new_thread' sub_id %}" method="post">
     {% csrf_token %}
     <table class="form">
-        {{ form }}
+        {{ form.as_p }}
     </table>
     <input type="submit" value="Post"/>
 </form>
