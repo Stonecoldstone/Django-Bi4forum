@@ -4,6 +4,6 @@
 <form enctype="multipart/form-data" action="{% url 'forum:change_avatar' %}" method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit"/>
+    <input class="excluded" type="submit"/>
 </form>
 {% endblock %}

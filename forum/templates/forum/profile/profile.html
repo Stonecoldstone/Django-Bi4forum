@@ -5,55 +5,62 @@
 <link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
 <style>
     ul.subforum {
-    width: 90%;
     }
-    ul.subforum li {
-    border: none;
+    ul.subforum li:nth-of-type(2) {
+    border-top: none;
+    }
+    ul.subforum li:first-of-type {
+    border-top: 3px solid rgba(255, 165, 0, 0.5);
     }
     ul.subforum li.stats {
-    border-top: 10px solid orange;
+    border-top: 10px solid rgba(255, 165, 0, 0.5);
+    margin-top: 10px;
     }
     div.menu a, span {
+    display: inline-block;
+    width: 250px;
     margin-right: 20px;
-    width: 200px;
     text-align: center;
     padding: 7px;
     }
     ul p {
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1px;
-    padding: 3px;
-    margin-right: 30px;
-    }
-    h3 a {
-    background-color: orange;
-    width: auto;
-    border: 10px solid orange;
-    padding: 0 10px;
-    margin: 0;
-    margin-right: 30px;
-    }
-    h3 a:hover {
-    border: 10px solid rgb(147, 55, 237);
-    }
-    ul.threads{
-    background-color: white;
-    list-style-type: none;
-    margin-right: 30px;
-    padding: 0;
+    padding: 3px 8px;
+    margin-right: 20px;
     }
     ul.threads li{
-    padding: 3px 10px;
-    border: 2px solid black;
-    border-collapse: collapse;
+    padding: 5px 10px;
+    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    }
+    ul.threads li.header {
+    background-color: rgba(255, 255, 255, 0.5);
+    width: auto;
+    padding: 5px 10px;
+    margin-bottom: 2px;
+    border: none;
+    }
+    ul.threads{
+    list-style-type: none;
+    margin: 15px 20px 15px 0;
+    padding: 0;
     }
     ul.threads li a {
-    color: black;
+    font-size: 14px;
     display: block;
     }
-    ul.threads li:hover {
+    ul.threads li.header a {
+   font-size: 18px;
+    }
+    ul.threads li.header:hover {
     background-color: rgb(147, 55, 237);
     }
+    ul.threads li:nth-of-type(2) {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
 
 
 </style>
@@ -91,16 +98,16 @@
             <h3>User statistics:</h3>
             <p>Registration date: {{ user.date_joined }}</p>
             <p>Last login: {{ user.last_login }}</p>
-            <h3><a href="{% url 'forum:thread' 10 %}?page=1">Threads ({{ thread_count }})</a></h3>
             <ul class="threads">
+            <li class="header"><a href="{% url 'forum:thread' 10 %}?page=1">Threads ({{ thread_count }})</a></li>
                 {% for t in last_threads %}
                 <li>
                     <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
                 </li>
                 {% endfor %}
             </ul>
-            <h3><a href="{% url 'forum:thread' 10 %}?page=1">Posts ({{ post_count }})</a></h3>
             <ul class="threads">
+            <li class="header"><a href="{% url 'forum:thread' 10 %}?page=1">Posts ({{ post_count }})</a></li>
                 {% for p in last_posts %}
                 {% if not p.is_thread %}
                 <li>

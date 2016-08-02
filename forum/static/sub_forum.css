@@ -1,49 +1,59 @@
-body {
-width: 97%;}
+
 ul.attached {
 list-style-type: none;
-margin: 0 1% 30px;
+margin: 0 1% 30px 1%;
 padding: 0;
 }
 ul.unattached {
 list-style-type: none;
-margin: 0 1%;
+margin: 0 1% 2% 1%;
 padding: 0;
 }
 h1 {
 margin: 0 1%;
 }
 li.thread {
-border: 1px solid orange;
+border: 3px solid rgba(255, 165, 0, 0.5);
 border-top:none;
 padding: 5px 10px;
 }
 li.h3 {
 width: 100%%;
-border: 1px solid orange;
+border: 3px solid rgba(255, 165, 0, 0.5);
 color: white;
-padding: 10px 12px;
+padding: 10px 20px;
 font-weight: bold;
-font-size: 18px;
+font-size: 20px;
 }
-div.thread, div.pages, div.posts, div.threadinfo, div.pic {
+div.thread, div.pages, div.posts, div.pic, div.somelinks {
 display: inline-block;
 vertical-align: middle;
 }
+div.threadinfo {
+display:inline-block;
+font-size: 14px;
+margin-left: 10px;
+}
 div.thread {
 width: 30%;
+margin: 10px; 0;
+font-size: 14px;
+}
+a.main {
+font-size: 18px;
 }
 div.pages {
 margin-left: 10%;
 width: 90px;
 }
 div.posts {
+font-size: 14px;
 width: 120px;
-margin-left: 5%;
+margin: 10px 4% 10px 3%;
+margin-left: 3%;
+margin-right: 6%;
 }
-div.pic {
-margin-left: 6%;
-}
+
 
 div {
 word-break: break-all;
@@ -75,13 +85,7 @@ height: 20px;
 z-index: 10;
 }
 
-a.button {
-display: inline-block;
-border: 2px solid orange;
-border-radius: 1px;
-background-color: orange;
-color: black;
-}
+
 /*span {
 display: inline-block;
 padding: 3px 5px;
@@ -90,10 +94,7 @@ border-radius: 1px;
 background-color: rgb(147, 55, 237);
 color: black;
 }*/
-a.button:hover {
-background-color: rgb(147, 55, 237);
-border-color: rgb(147, 55, 237);
-}
+
 #add a {
 margin: 10px 1% 15px;
 font-size: 18px;

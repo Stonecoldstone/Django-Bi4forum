@@ -84,7 +84,7 @@ class Thread(ThreadPostAbstract):
         return self.thread_title
 
     def get_absolute_url(self):
-        return reverse('forum:thread', args=(self.id, 1))
+        return reverse('forum:thread', args=(self.id,))
 
     class Meta:
         ordering = ['-post_add_date', '-pub_date']

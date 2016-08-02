@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css'%}"/>
 {% endblock %}
 {% block links %}
-/<a class="secondary" href="{% url 'forum:category' sub.category.id %}">{{ sub.category.title }}</a>
+/<a href="{% url 'forum:category' sub.category.id %}">{{ sub.category.title }}</a>
 {% endblock %}
 {% block body %}
 <div id="body">
@@ -19,7 +19,10 @@
         {% for t in attach_threads %}
         <li class="thread">
                 <div class="thread">
-                    <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
+                    <a class="main" href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a><br/>
+                    by <a class="secondary" href="{% url 'forum:profile' t.user.id %}">
+                    {{ t.user.username }}
+                      </a>
                 </div>
                 <div class="pages">
                     {% for p in t.thread_pages %}
@@ -29,6 +32,7 @@
                 <div class="posts">
                     Posts: {{ t.posts_num }}
                 </div>
+            <div class="threadinfo">
                 <div class="pic">
                     <img {% if t.last_post.user.userprofile.avatar %}
                          src="{{ t.last_post.user.userprofile.avatar.url }}"
@@ -38,13 +42,14 @@
                          {% endif %}
                          width="30px" height="30px"/>
                 </div>
-                <div class="threadinfo">
+                <div class="somelinks">
                     <a href="{{ t.last_post.get_absolute_url }}">
                         {{ t.last_post.pub_date }}
                     </a> by
-                    <a href="{% url 'forum:profile' t.last_post.user.id %}">
+                    <a class="secondary" href="{% url 'forum:profile' t.last_post.user.id %}">
                         {{ t.last_post.user.username }}
                     </a>
+                </div>
                 </div>
         </li>
         {% endfor %}
@@ -57,7 +62,10 @@
         {% for t in threads %}
         <li class="thread">
             <div class="thread">
-                <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
+                <a class="main" href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a><br/>
+                by <a class="secondary" href="{% url 'forum:profile' t.user.id %}">
+                    {{ t.user.username }}
+                      </a>
             </div>
             <div class="pages">
                 {% for p in t.thread_pages %}
@@ -71,7 +79,8 @@
             <div class="posts">
                 Posts: {{ t.posts_num }}
             </div>
-            <div class="pic">
+            <div class="threadinfo">
+                <div class="pic">
                 <img
                         {% if t.last_post.user.userprofile.avatar %}
                         src="{{ t.last_post.user.userprofile.avatar.url }}"
@@ -80,10 +89,11 @@
                         src="{% static 'avatar.jpg' %}"
                         {% endif %}
                         width="30px" height="30px"/>
-            </div>
-            <div class="threadinfo">
+                    </div>
+                <div class="somelinks">
                 <a href="{{ t.last_post.get_absolute_url }}">{{ t.last_post.pub_date }}</a> by
-                <a href="{% url 'forum:profile' t.last_post.user.id %}">{{ t.last_post.user.username }}</a>
+                <a class="secondary" href="{% url 'forum:profile' t.last_post.user.id %}">{{ t.last_post.user.username }}</a>
+                    </div>
             </div>
         </li>
         {% empty %}

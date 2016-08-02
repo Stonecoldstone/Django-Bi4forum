@@ -1,63 +1,33 @@
 body {
 background-color:black;
 color:white;
-width: 97%;
+font-family: "Arial";
 }
 ul.subforum {
 list-style-type:none;
-margin: 0 1% 5% 1%;
+margin: 0 1% 5%;
 padding: 0;
-
 }
 ul.subforum li {
-border: 3px solid orange;
+border: 3px solid rgba(255, 165, 0, 0.5);
 border-top:none;
-padding: 13px 0 10px 2%;
+padding: 13px 0 10px 20px;
 }
 
-div.stats, div.lastthread, div.subforum {
-display: inline-block;
-vertical-align:top;
+ul.subforum li.header {
+margin-bottom: 3px;
+display:block;
+background-color: rgba(255, 165, 0, 0.9);
+border-color: rgba(255, 255, 255, 0);
 }
-p {
-line-height:1.4;
+li.header a {
+display:block;
+font-size: 22px;
+color: black
 }
-p.subtitle {
-font-size: 18px;
-}
-
-p.lastthread a {
-font-weight: normal;
-white-space: nowrap;
-overflow: hidden;
-display: inline-block;
-width: 160px;
-font-size: 16px;
-text-overflow: ellipsis;
-}
-.subdescr {
-font-size: 14px;
-}
-div.stats, div.lastthread {
-font-size: 14px;
-}
-div.subforum {
-width:40%;
-height: 100px;
-}
-div.lastthread {
-width: 200px;
-height: 100px;
-padding-top: 0px;
-}
-div.stats {
-width:auto;
-margin-left: 10%;
-height: 92px;
-padding-top: 8px;
-}
-div.list {
-width: 98%;
+ul.subforum li.header:hover {
+background-color:rgb(147, 55, 237);
+border-color: rgb(147, 55, 237);
 }
 a:link {
 font-weight:bold;
@@ -70,25 +40,12 @@ margin-left: 1%;
 p.history a {
 font-weight: normal;
 }
+
 a:visited {
 color:orange;
 }
 a:hover {
 color:rgb(147, 55, 237);
-}
-li.header {
-display:block;
-background-color: orange;
-}
-li.header a {
-padding-top: 3px;
-display:block;
-font-size: 22px;
-color: black
-}
-li.header:hover {
-background-color:rgb(147, 55, 237);
-border-color: rgb(147, 55, 237);
 }
 ul.options {
 list-style-type: none;
@@ -97,31 +54,70 @@ padding:0;
 float:right;
 }
 div.header {
+margin-right: 0.9%;
 height: 60px;
-margin-right: 2%;
 }
 ul.options li {
 float:left;
 height: 35px;
-padding: 0px 10px 0px;
+padding: 0;
 margin-left: 15px;
 }
 
 li#profile a {
-vertical-align: top;
+float:right;
 }
-img {
+.options a {
+margin-left: 3px;
+margin-right: 5px;
+}
+/*img {
 border: 3px groove rgb(147, 55, 237);
 border-radius: 1px;
+}*/
+.subforum div {
+font-size: 14px;
+display: inline-block;
+vertical-align:middle;
+}
+div.subforum {
+width: 30%;
+}
+div.stats {
+margin-left: 20%;
+margin-right: 10%;
+width: 130px;
+}
+div.lastthread {
+width: 280px;
+}
+p.lastthread {
+margin-left: 5px;
+}
+.subforum a {
+font-size: 20px;
+}
+.lastthread a {
+font-size: 14px;
+}
+a.secondary {
+font-size: 14px;
+font-weight: normal;
+}
+p.lastthread {
+display: inline-block;
 }
 
+ul.subforum li:nth-of-type(2){
+border-top: 3px solid rgba(255, 165, 0, 0.5);
+}
 /* Links that look like buttons styling */
 a.button, input[type=submit] {
 display: inline-block;
 padding: 3px 8px;
-border: 2px solid orange;
+border: 2px solid rgba(255, 165, 0, 0.1);
 border-radius: 1px;
-background-color: orange;
+background-color: rgba(255, 165, 0, 0.9);
 color: black;
 }
 a.button:hover, input[type=submit]:hover {
@@ -129,10 +125,12 @@ background-color: rgb(147, 55, 237);
 border-color: rgb(147, 55, 237);
 transition: 0.3s;
 }
-
+.post {
+margin: 30px 10px;
+}
 /* Textarea form styling */
-textarea, input[type=text] {
-border: 3px solid orange;
+input:not(.excluded), textarea {
+border: 3px solid rgba(255, 165, 0, 0.5);
 border-radius: 1px;
 color: white;
 background-color: rgb(20, 20, 20);
@@ -141,12 +139,18 @@ width: 70%;
 padding: 10px;
 resize: none;
 }
-textarea:focus, input[type=text]:focus {
+input:not(.excluded):focus, textarea:focus{
 border-color: rgb(147, 55, 237);
 transition: 0.3s;
+}
+input[type=submit] {
+margin-top: 7px;
+font-size: 18px;
 }
 /* Form errors styling */
 .errorlist {
 list-style-type: none;
 color: red;
 }
+table {
+text-align: left;}

@@ -227,6 +227,8 @@ def new_thread(request, sub_id):
         if form.is_valid():
             thread_title = form.cleaned_data['thread_title']
             full_text = form.cleaned_data['full_text']
+            full_text = html.escape(full_text)
+            full_text = functions.replace_tags(full_text)
             user = request.user
             subforum = SubForum.objects.get(id=sub_id)
             thread = Thread(user=user, thread_title=thread_title,
@@ -235,7 +237,8 @@ def new_thread(request, sub_id):
             post = Post(user=user, full_text=full_text, thread=thread,
                         is_thread=True)
             post.save()
-            return HttpResponseRedirect(reverse('forum:thread', args=(thread.id, 1)))
+            # return HttpResponseRedirect(reverse('forum:thread', args=(thread.id, 1)))
+            return HttpResponseRedirect(thread.get_absolute_url())
 
     context = {'form': form, 'sub_id': sub_id}
     return render(request, 'forum/new_thread.html', context)
@@ -331,7 +334,10 @@ def change_info(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.save()
-            user_profile.signature = form.cleaned_data['signature']
+            signature = form.cleaned_data['signature']
+            signature = html.escape(signature)
+            signature = functions.replace_tags(signature)
+            user_profile.signature = signature
             user_profile.save()
             return HttpResponseRedirect(reverse('forum:change_profile'))
     context = {'user': user, 'user_profile': user_profile, 'form': form}
@@ -346,7 +352,8 @@ def change_email(request):
         form = forms.Email(request.POST)
         if form.is_valid():
             try:
-                userkey =UserKey.objects.get(user=user)
+                userkey = UserKey.objects.get(user=user)
+                userkey.email = form.cleaned_data['new_email']
             except ObjectDoesNotExist:
                 userkey = UserKey(user=user, email=form.cleaned_data['new_email'])
             #user.userkey.email = form.cleaned_data['new_email']

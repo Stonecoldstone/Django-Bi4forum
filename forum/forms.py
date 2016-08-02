@@ -49,7 +49,7 @@ class Registration(auth_forms.UserCreationForm):
                                label=_('* Username'),
                                help_text=_('Username that will be displayed on forum and'
                                            ' used for authentication.\n'
-                                           'May contain 1-30 letters, numbers,'
+                                           'May contain 1-20 letters, numbers,'
                                            ' and _, @, +, ., - characters'),
                                validators=[
                                    validate_username_chars,

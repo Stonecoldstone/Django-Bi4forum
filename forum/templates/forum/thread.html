@@ -12,7 +12,6 @@
 {% endwith %}
 {% endblock %}
 {% block body %}
-<a href="{% url 'forum:sign_up' %}">Нажми сюда</a>
 <div id="body">
     <h1>{{ thread.thread_title }}</h1>
     <ul class="unattached">
@@ -23,7 +22,7 @@
                 {% if user_avatar %}
                 <img src="{{user_avatar.url }}" alt="Avatar"/>
                 {% else %}
-                <img src="{{ static 'avatar.jpg' %}" alt="Avatar"/>
+                <img src="{% static 'avatar.jpg' %}" alt="Avatar"/>
                 {% endif %}
                 {% endwith %}
                 <br/>
@@ -42,13 +41,13 @@
         {% endfor %}
     </ul>
     {% if request.user.is_authenticated and request.user.is_active %}
-    <form id="post" action="{% url 'forum:thread' thread.id %}" method="post">
+    <form class="post" action="{% url 'forum:thread' thread.id %}" method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.full_text.errors }}
         {{ form.full_text.label_tag }}<br/>
         {{ form.full_text }}<br/>
-        <input type="submit" value="Submit"/>
+        <input class="excluded" type="submit" value="Submit"/>
     </form>
     {% endif %}
 </div>

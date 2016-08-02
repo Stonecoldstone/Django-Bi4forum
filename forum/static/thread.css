@@ -6,11 +6,12 @@ display: inline-block;
 margin: 5px;
 }
 .message {
+font-size: 16px;
 margin-top: 6px;
 min-height: 204px;
 vertical-align: top;
-border-bottom: 1px solid orange;
-width: 80%;
+border-bottom: 1px solid rgba(255, 165, 0, 0.5);
+width: 75%;
 word-break: normal;
 text-align: justify;
 }
@@ -21,18 +22,20 @@ font-weight: normal;
 font-size: 12px;
 }
 p.sign {
-border-top: 1px solid orange;
+border-top: 1px solid rgba(255, 165, 0, 0.5);
 padding-top: 5px;
 }
 .profile {
+width: 18%;
 text-align: center;
+word-break: break-all;
 }
 .profile img, .profile a {
 display: inline-block;
 margin-bottom: 8px;
 }
 a.nick {
-font-size: 18px;
+font-size: 16px;
 }
 a.messages {
 font-weight: normal;
@@ -40,14 +43,12 @@ font-size: 14px;
 }
 span.date {
 padding: 1px 4px;
-border: 1px solid white;
+border: 1px solid rgba(255, 255, 255, 0.2);
 background-color: black;
 }
 
-#post {
-margin: 30px 10px;
+li.thread {
 }
-input[type=submit] {
-margin-top: 7px;
-font-size: 18px;
+li.thread:first-of-type {
+border-top: 3px solid rgba(255, 165, 0, 0.5);
 }
