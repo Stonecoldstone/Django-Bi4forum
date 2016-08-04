@@ -1,9 +1,9 @@
 {% extends "forum/main_page.html" %}
 {% block title %}Log in{% endblock %}
 {% block body %}
-<form class="post" action="{% url 'forum:login' %}?next={{ next }}" method="post">
+<form action="{% url 'forum:login' %}?next={{ next }}" method="post">
     {% csrf_token %}
-    <table class="form">{{ form }}</table>
+    {% include 'forum/form.html' %}
     <input class="excluded" type="submit" value="Log in"/>
 </form>
 {% endblock %}

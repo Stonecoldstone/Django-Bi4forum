@@ -120,7 +120,7 @@ class Post(ThreadPostAbstract):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    signature = models.TextField(default='', blank=True, null=True)
+    signature = models.TextField(default='', max_length=300, blank=True, null=True)
     avatar = models.ImageField(max_length=200, upload_to='avatars', blank=True,
                                null=True)
 

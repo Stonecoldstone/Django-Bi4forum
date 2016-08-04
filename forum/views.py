@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, resolve_url
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from .models import Category, SubForum, Thread, Post, UserProfile, UserKey
 from . import functions
 from . import forms
@@ -8,10 +8,12 @@ from django.contrib.auth import get_user_model, decorators, login as auth_login,
 import math
 from django.contrib.auth import views as auth_views
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic.list import ListView
 from django.conf import settings
 from django.utils import html
+from django.utils.translation import ugettext_lazy as _
+
 
 # def main_page(request, cat=None, template='forum/main_page.html'):
 #     if cat is None:
@@ -121,8 +123,8 @@ def thread(request, thread_id):
         form = forms.Post(request.POST)
         if form.is_valid():
             full_text = form.cleaned_data['full_text']
-            full_text = html.escape(full_text)
-            full_text = functions.replace_tags(full_text)
+            # full_text = html.escape(full_text)
+            # full_text = functions.replace_tags(full_text)
             post = Post(user=user, full_text=full_text, thread=thread)
             post.save()
             return HttpResponseRedirect(post.get_absolute_url())
@@ -151,6 +153,12 @@ def thread(request, thread_id):
     p_index = page.number - 1
     i = p_index - 2 if p_index > 2 else 0
     pages_list = init_list[i:p_index + 3]
+    for p in page.object_list:
+        p.full_text = functions.format_in_view(p.full_text)
+        signature = p.user.userprofile.signature
+        if signature:
+            p.signature = functions.format_in_view(signature)
+
     context = {
         'thread': thread, 'posts': page.object_list, 'pages_list': pages_list,
         'num_page': page.number, 'form': form, 'last_page': paginator.num_pages,
@@ -227,8 +235,8 @@ def new_thread(request, sub_id):
         if form.is_valid():
             thread_title = form.cleaned_data['thread_title']
             full_text = form.cleaned_data['full_text']
-            full_text = html.escape(full_text)
-            full_text = functions.replace_tags(full_text)
+            # full_text = html.escape(full_text)
+            # full_text = functions.replace_tags(full_text)
             user = request.user
             subforum = SubForum.objects.get(id=sub_id)
             thread = Thread(user=user, thread_title=thread_title,
@@ -289,10 +297,12 @@ def profile(request, user_id=None):
     post_count = user.post_set.count()
     thread_count = user.thread_set.count()
     post_count -= thread_count
+    signature = functions.format_in_view(user_profile.signature)
     context = {
         'user': user, 'user_profile': user_profile, 'last_posts': last_posts,
         'last_threads': last_threads, 'post_count': post_count,
         'thread_count': thread_count, 'email_confirm': email_confirm,
+        'signature': signature,
     }
     return render(request, 'forum/profile/profile.html', context)
 
@@ -310,8 +320,12 @@ def change_avatar(request):
             upfile = request.FILES['upload_file']
             avatar_field = user_profile.avatar
             size = (200, 200)
-            functions.handle_avatar(upfile, avatar_field, size)
-            return HttpResponseRedirect(reverse('forum:change_profile'))
+            try:
+                functions.handle_avatar(upfile, avatar_field, size)
+                return HttpResponseRedirect(reverse('forum:change_avatar'))
+            except IOError:
+                form.add_error('upload_file', ValidationError(_('File type is not supported')
+                                                              , code='not_supported'))
     return render(request, 'forum/profile/change_avatar.html', {
         'form': form, 'user': user, 'user_profile': user_profile,
     })
@@ -335,11 +349,11 @@ def change_info(request):
             user.last_name = form.cleaned_data['last_name']
             user.save()
             signature = form.cleaned_data['signature']
-            signature = html.escape(signature)
-            signature = functions.replace_tags(signature)
+            # signature = html.escape(signature)
+            # signature = functions.replace_tags(signature)
             user_profile.signature = signature
             user_profile.save()
-            return HttpResponseRedirect(reverse('forum:change_profile'))
+            return HttpResponseRedirect(reverse('forum:profile'))
     context = {'user': user, 'user_profile': user_profile, 'form': form}
     return render(request, 'forum/profile/change_info.html', context)
 

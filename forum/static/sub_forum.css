@@ -1,17 +1,17 @@
 
 ul.attached {
 list-style-type: none;
-margin: 0 1% 30px 1%;
+margin: 0 0 30px;
 padding: 0;
 }
 ul.unattached {
 list-style-type: none;
-margin: 0 1% 2% 1%;
+margin: 0 0 2%;
 padding: 0;
 }
-h1 {
+/*h1 {
 margin: 0 1%;
-}
+}*/
 li.thread {
 border: 3px solid rgba(255, 165, 0, 0.5);
 border-top:none;
@@ -96,7 +96,7 @@ color: black;
 }*/
 
 #add a {
-margin: 10px 1% 15px;
+margin: 10px 0 15px;
 font-size: 18px;
 padding: 5px 8px;
 }

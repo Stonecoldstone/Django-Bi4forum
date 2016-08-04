@@ -3,7 +3,10 @@
 {% block info %}
 <form enctype="multipart/form-data" action="{% url 'forum:change_avatar' %}" method="post">
     {% csrf_token %}
-    {{ form }}
-    <input class="excluded" type="submit"/>
+    {{ form.non_field_errors }}
+        {{ form.upload_file.errors }}
+        {{ form.upload_file.label_tag }}<br/>
+    {{ form.upload_file }}<br/>
+    <input class="excluded" type="submit" value="Upload"/>
 </form>
 {% endblock %}

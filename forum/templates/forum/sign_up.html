@@ -1,17 +1,13 @@
 {% extends 'forum/main_page.html' %}
 {% block title %}Sign Up{% endblock %}
 {% block body %}
-<form class="post" action="{% url 'forum:sign_up' %}?next={{ redirect_to }}" method="post">
+<form action="{% url 'forum:sign_up' %}?next={{ redirect_to }}" method="post">
     {% csrf_token %}
-    <table class="form">
-        {{ form }}
-    </table>
-    <!--{{ form.non_field_errors }}-->
-    <!--{% for inp in form %}-->
-        <!--{{ inp.errors }}-->
-        <!--{{ inp.label_tag }}<br/>-->
-        <!--{{ inp }}<br/>-->
-    <!--{% endfor %}-->
+    {% include 'forum/form.html' %}
+
+<!--<table>-->
+    <!--{{ form.as_table }}-->
+    <!--</table>-->
     <input class="excluded" type="submit" value="Sign Up"/>
 </form>
 {% endblock %}

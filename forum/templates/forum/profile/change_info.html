@@ -3,9 +3,7 @@
 {% block info %}
 <form action="{% url 'forum:change_info' %}" method="post">
     {% csrf_token %}
-    <table>
-        {{ form }}
-        <td><input class="excluded" type="submit"/></td>
-    </table>
+        {% include 'forum/form.html' %}
+        <input class="excluded" type="submit"/>
 </form>
 {% endblock %}

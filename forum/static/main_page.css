@@ -2,10 +2,11 @@ body {
 background-color:black;
 color:white;
 font-family: "Arial";
+margin: 0 2%;
 }
 ul.subforum {
 list-style-type:none;
-margin: 0 1% 5%;
+margin: 0 0 5%;
 padding: 0;
 }
 ul.subforum li {
@@ -34,9 +35,7 @@ font-weight:bold;
 text-decoration:none;
 color:orange;
 }
-p.history {
-margin-left: 1%;
-}
+
 p.history a {
 font-weight: normal;
 }
@@ -125,19 +124,26 @@ background-color: rgb(147, 55, 237);
 border-color: rgb(147, 55, 237);
 transition: 0.3s;
 }
-.post {
-margin: 30px 10px;
+form {
+margin: 30px 0;
 }
-/* Textarea form styling */
+/* form styling */
 input:not(.excluded), textarea {
 border: 3px solid rgba(255, 165, 0, 0.5);
 border-radius: 1px;
 color: white;
 background-color: rgb(20, 20, 20);
 font-size: 16px;
-width: 70%;
 padding: 10px;
 resize: none;
+width: 100%;
+}
+input[type=file]{
+border: none;
+background-color: black;
+padding: 0;
+margin: 10px 0;
+
 }
 input:not(.excluded):focus, textarea:focus{
 border-color: rgb(147, 55, 237);
@@ -147,10 +153,54 @@ input[type=submit] {
 margin-top: 7px;
 font-size: 18px;
 }
+.post {
+width: 70%;
+}
+.post input {
+margin-bottom: 10px;
+}
 /* Form errors styling */
-.errorlist {
+/*table {
+text-align: left;}*/
+.tooltip {
+width: 30%;
+position:relative;
+display:inline-block;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100%;
+    background-color: rgba(255, 165, 0, 1);
+    color: black;
+    text-align: center;
+    padding: 5px 13px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+form ul, form ul li {
+padding:0;
+margin: 0;
+}
+form ul li {
 list-style-type: none;
+margin-bottom: 10px;
+}
+li.error {
+margin: 0 0 0 0px;
+}
+label {
+display: inline-block;
+width: 180px;
+margin-right: 10px;
+}
+.error, .errorlist {
 color: red;
 }
-table {
-text-align: left;}
+img {
+border: 1px solid rgba(255, 255, 255, 0.2);
+}

@@ -27,7 +27,14 @@ def validate_thread_title_unique(title):
         return
     else:
         raise ValidationError(_('Thread with that name already exists'), code='exists')
-
+FILE_MAX_SIZE = 10485760
+def validate_avatar(file):
+    content_type = file.content_type.split('/')[0]
+    if content_type != 'image':
+        raise ValidationError(_('File is not an image'), code='wrong_type')
+    if file.size > FILE_MAX_SIZE:
+        raise ValidationError(_('File size should be less than 5 MB'), code='size_limit')
+    return
 
 # def validate_post_unique(post):
 #     try:
@@ -85,13 +92,13 @@ class Post(forms.Form):
 
 
 class File(forms.Form):
-    upload_file = forms.ImageField(max_length=200)
+    upload_file = forms.ImageField(max_length=200, validators=[validate_avatar])
 
 
 class Info(forms.Form):
     first_name = forms.CharField(max_length=30, required=False)
     last_name = forms.CharField(max_length=30, required=False)
-    signature = forms.CharField(widget=forms.Textarea, required=False)
+    signature = forms.CharField(max_length=500, widget=forms.Textarea, required=False)
 
 
 class Email(forms.Form):

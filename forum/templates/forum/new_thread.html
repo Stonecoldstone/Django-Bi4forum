@@ -1,11 +1,14 @@
 {% extends 'forum/main_page.html' %}
 {% block title %}Create new thread{% endblock %}
 {% block body %}
-<form action="{% url 'forum:new_thread' sub_id %}" method="post">
+<form class="post" action="{% url 'forum:new_thread' sub_id %}" method="post">
     {% csrf_token %}
-    <table class="form">
-        {{ form.as_p }}
-    </table>
+    {{ form.non_field_errors }}
+    {% for f in form %}
+        {{ f.errors }}
+        {{ f.label_tag }}<br/>
+        {{ f }}<br/>
+    {% endfor %}
     <input class="excluded" type="submit" value="Post"/>
 </form>
 {% endblock %}

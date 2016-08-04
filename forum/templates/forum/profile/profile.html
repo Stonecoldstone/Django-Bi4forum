@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
 <style>
     ul.subforum {
+    margin-bottom: 10px;
     }
     ul.subforum li:nth-of-type(2) {
     border-top: none;
@@ -87,12 +88,14 @@
                 <span>Change password</span></div>
             {% endif %}
         </li>
+        </ul>
         {% block info %}
+    <ul class="subforum">
         <li class="info">
             <h3>User information:</h3>
             <p>First name: {{ user.first_name }}</p>
             <p>Last name: {{ user.last_name }}</p>
-            <p>Signature: {{ user_profile.signature }}</p>
+            <p>Signature: {{ signature|safe|linebreaksbr }}</p>
         </li>
         <li class="stats">
             <h3>User statistics:</h3>
@@ -118,6 +121,6 @@
             </ul>
         </li>
     </ul>
+    {% endblock info %}
 </div>
-{% endblock info %}
 {% endblock %}

@@ -34,14 +34,14 @@
                 <span class="date" id="{{ p.id }}"><a href="#{{ p.id }}">{{ p.pub_date }}</a></span><br/>
                 <p>{{ p.full_text|safe|linebreaksbr }}</p>
                 {% if p.user.userprofile.signature %}
-                <p class="sign">{{ p.user.userprofile.signature }}</p>
+                <p class="sign">{{ p.signature|safe|linebreaksbr }}</p>
                 {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
     {% if request.user.is_authenticated and request.user.is_active %}
-    <form class="post" action="{% url 'forum:thread' thread.id %}" method="post">
+    <form id="post" class="post" action="{% url 'forum:thread' thread.id %}" method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.full_text.errors }}

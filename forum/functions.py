@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 import re
+from django.utils import html
 
 # def pages(content_on_page, page_num, content_num):
 #     index = page_num * content_on_page
@@ -18,41 +19,39 @@ import re
 
 
 def resize(size, prefix='', img=None, bytes=None):
-    try:
-        if img:
-            image = Image.open(img)
-        else:
-            file = io.BytesIO(bytes)
-            image = Image.open(file)
-        w, h = image.size
-        pref_w, pref_h = size
-        new_size = (w / h) * pref_h, pref_h
-        if new_size[0] < pref_w or new_size[1] < pref_h:
-            new_size = pref_w, (h / w) * pref_w
-        new_size = tuple(round(i) for i in new_size)
-        image = image.resize(new_size, Image.ANTIALIAS)
-        w, h = new_size
-        a, b = ((w - pref_w) / 2), ((h - pref_h) / 2)
-        box = (a, b, w - a, h - b)
-        region = image.crop(box)
-        if img:
-            file = '%s%s' % (prefix, img)
-        else:
-            file = io.BytesIO()
-            region.save(file, format='JPEG')
-            file.seek(0)
-        return file
-    except IOError:
-        return
+    if img:
+        image = Image.open(img)
+    else:
+        file = io.BytesIO(bytes)
+        image = Image.open(file)
+    w, h = image.size
+    pref_w, pref_h = size
+    new_size = (w / h) * pref_h, pref_h
+    if new_size[0] < pref_w or new_size[1] < pref_h:
+        new_size = pref_w, (h / w) * pref_w
+    new_size = tuple(round(i) for i in new_size)
+    image = image.resize(new_size, Image.ANTIALIAS)
+    w, h = new_size
+    a, b = ((w - pref_w) / 2), ((h - pref_h) / 2)
+    box = (a, b, w - a, h - b)
+    image = image.crop(box)
+    if img:
+        file = '%s%s' % (prefix, img)
+    else:
+        file = io.BytesIO()
+        image.save(file, format='JPEG')
+        file.seek(0)
+    return file
 
 
 def handle_avatar(uploaded_file, filefield, size):
     resized_img = resize(size, bytes=uploaded_file.read())
-    if resized_img:
-        filefield.delete(save=False)
-        name = uploaded_file.name
-        file = File(resized_img)
-        filefield.save(name, file)
+    filefield.delete(save=False)
+    name = uploaded_file.name
+    file = File(resized_img)
+    filefield.save(name, file)
+
+
 
 
 def is_auth(user):
@@ -160,3 +159,7 @@ def replace_tags(string):
             string = re.sub(pattern, repl, string, (re.DOTALL | re.IGNORECASE))
     return string
 
+def format_in_view(text):
+    text = html.escape(text)
+    text = replace_tags(text)
+    return text
