@@ -404,7 +404,6 @@ def search(request):
                 query = Post.objects.filter(user__username=user)
             if subforums:
                 query = query.filter(thread__subforum__in=subforums)
-
             thread_query = Q(thread__thread_title__icontains=words[0])
             for i in words[1:]:
                 thread_query = thread_query & Q(thread__thread_title__icontains=i)
@@ -419,10 +418,7 @@ def search(request):
                 query = query.filter(is_thread=False)
                 query = query.filter(post_query)
                 if search_by == 'pt':
-                    query = list(chain(query, t_query))
-
-            num_res = len(query)
-
+                    query = chain(query, t_query)
             order_dict = {'p': 'pub_date', 'rt': 'rating'}
             query = sorted(query, key=attrgetter(order_dict[sort_by]), reverse=True)
             paginator = Paginator(query, settings.POSTS_ON_PAGE)
@@ -440,12 +436,12 @@ def search(request):
             # escape user formatting
             for post in page:
                 post.full_text = functions.replace_tags(post.full_text, delete=True)
+            num_res = len(query)
             return render(request, 'forum/search_form.html', {
                 'query': page, 'pages_list': pages_list, 'form': form,
                 'last_page': paginator.num_pages, 'get': get,
                 'num_page': page.number, 'num_res': num_res,
             })
-
     context = {'form': form,}
     return render(request, 'forum/search_form.html', context)
 
