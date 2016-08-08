@@ -6,7 +6,7 @@
     {% if num_page != n %}
     <a class="button" href="?page={{ n }}">{{ n }}</a>
     {% else %}
-    <span>{{ n }}</span>
+    <span class="page">{{ n }}</span>
     {% endif %}
     {% endfor %}
     {% if last_page not in pages_list %}

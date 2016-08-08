@@ -32,7 +32,7 @@
             </div>
             <div class="message">
                 <span class="date" id="{{ p.id }}"><a href="#{{ p.id }}">{{ p.pub_date }}</a></span><br/>
-                <p>{{ p.full_text|safe|linebreaksbr }}</p>
+                <div class="text">{{ p.full_text|safe|linebreaksbr }}</div>
                 {% if p.user.userprofile.signature %}
                 <p class="sign">{{ p.signature|safe|linebreaksbr }}</p>
                 {% endif %}

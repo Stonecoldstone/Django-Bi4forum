@@ -17,14 +17,14 @@
     border-top: 10px solid rgba(255, 165, 0, 0.5);
     margin-top: 10px;
     }
-    div.menu a, span {
+    div.menu a {
     display: inline-block;
     width: 250px;
     margin-right: 20px;
     text-align: center;
     padding: 7px;
     }
-    ul p {
+    li > p, li > div {
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 1px;
     padding: 3px 8px;
@@ -37,7 +37,7 @@
     border-top: none;
     }
     ul.threads li.header {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
     width: auto;
     padding: 5px 10px;
     margin-bottom: 2px;
@@ -56,11 +56,13 @@
    font-size: 18px;
     }
     ul.threads li.header:hover {
-    background-color: rgb(147, 55, 237);
+    background-color: rgb(64, 200, 255);
     }
     ul.threads li:nth-of-type(2) {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
+    div.text {
+    font-size: 16px;}
 
 
 
@@ -95,14 +97,14 @@
             <h3>User information:</h3>
             <p>First name: {{ user.first_name }}</p>
             <p>Last name: {{ user.last_name }}</p>
-            <p>Signature: {{ signature|safe|linebreaksbr }}</p>
+            <div class="text">Signature: {{ signature|safe|linebreaksbr }}</div>
         </li>
         <li class="stats">
             <h3>User statistics:</h3>
             <p>Registration date: {{ user.date_joined }}</p>
             <p>Last login: {{ user.last_login }}</p>
             <ul class="threads">
-            <li class="header"><a href="{% url 'forum:thread' 10 %}?page=1">Threads ({{ thread_count }})</a></li>
+            <li class="header"><a href="{% url 'forum:search' %}?user={{ user }}&sort_by=p&search_by=t">Threads ({{ thread_count }})</a></li>
                 {% for t in last_threads %}
                 <li>
                     <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
@@ -110,7 +112,7 @@
                 {% endfor %}
             </ul>
             <ul class="threads">
-            <li class="header"><a href="{% url 'forum:thread' 10 %}?page=1">Posts ({{ post_count }})</a></li>
+            <li class="header"><a href="{% url 'forum:search' %}?user={{ user }}&sort_by=p&search_by=p">Posts ({{ post_count }})</a></li>
                 {% for p in last_posts %}
                 {% if not p.is_thread %}
                 <li>

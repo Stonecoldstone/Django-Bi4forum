@@ -29,7 +29,8 @@ urlpatterns = [
     url(r'^change_profile/$', views.changeprofile, name='change_profile'),
     url(r'^change_avatar/$', views.change_avatar, name='change_avatar'),
     url(r'^change_info/$', views.change_info, name='change_info'),
-    url(r'^change_email/$', views.change_email, name='change_email')
+    url(r'^change_email/$', views.change_email, name='change_email'),
+    url(r'^search/$', views.search, name='search'),
 
 
 ]  #not suitable for production!!

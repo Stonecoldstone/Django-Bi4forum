@@ -153,9 +153,11 @@ reg_list = [
 ]
 
 
-def replace_tags(string):
+def replace_tags(string, delete=False):
     if '[' in string and ']' in string:
         for pattern, repl in reg_list:
+            if delete:
+                repl = r'\g<content>'
             string = re.sub(pattern, repl, string, (re.DOTALL | re.IGNORECASE))
     return string
 

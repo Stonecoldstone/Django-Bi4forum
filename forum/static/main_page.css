@@ -1,3 +1,8 @@
+/*colors:
+purple: rgb(147, 55, 237)
+blue: rgb(21, 126, 255)
+light-blue: rgb(64, 200, 255)
+*/
 body {
 background-color:black;
 color:white;
@@ -27,8 +32,8 @@ font-size: 22px;
 color: black
 }
 ul.subforum li.header:hover {
-background-color:rgb(147, 55, 237);
-border-color: rgb(147, 55, 237);
+background-color: rgb(64, 200, 255);
+border-color: rgb(64, 200, 255);
 }
 a:link {
 font-weight:bold;
@@ -44,7 +49,7 @@ a:visited {
 color:orange;
 }
 a:hover {
-color:rgb(147, 55, 237);
+color:rgb(64, 200, 255);
 }
 ul.options {
 list-style-type: none;
@@ -111,7 +116,7 @@ ul.subforum li:nth-of-type(2){
 border-top: 3px solid rgba(255, 165, 0, 0.5);
 }
 /* Links that look like buttons styling */
-a.button, input[type=submit] {
+a.button, input[type=submit], span.page {
 display: inline-block;
 padding: 3px 8px;
 border: 2px solid rgba(255, 165, 0, 0.1);
@@ -119,9 +124,12 @@ border-radius: 1px;
 background-color: rgba(255, 165, 0, 0.9);
 color: black;
 }
+span.page {
+background-color: rgba(255, 165, 0, 0.6);
+}
 a.button:hover, input[type=submit]:hover {
-background-color: rgb(147, 55, 237);
-border-color: rgb(147, 55, 237);
+background-color: rgb(64, 200, 255);
+border-color: rgb(64, 200, 255);
 transition: 0.3s;
 }
 form {
@@ -146,7 +154,7 @@ margin: 10px 0;
 
 }
 input:not(.excluded):focus, textarea:focus{
-border-color: rgb(147, 55, 237);
+border-color: rgb(64, 200, 255);
 transition: 0.3s;
 }
 input[type=submit] {
@@ -203,4 +211,7 @@ color: red;
 }
 img {
 border: 1px solid rgba(255, 255, 255, 0.2);
+}
+div {
+word-wrap:break-word;
 }

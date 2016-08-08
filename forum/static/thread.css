@@ -1,5 +1,5 @@
 h1 {
-margin: 0 1% 15px;
+margin: 0 0 15px;
 }
 .profile, .message {
 display: inline-block;
@@ -8,7 +8,7 @@ margin: 5px;
 .message {
 font-size: 16px;
 margin-top: 6px;
-min-height: 204px;
+min-height: 201px;
 vertical-align: top;
 border-bottom: 1px solid rgba(255, 165, 0, 0.5);
 width: 75%;
@@ -41,7 +41,7 @@ a.messages {
 font-weight: normal;
 font-size: 14px;
 }
-span.date {
+.date {
 padding: 1px 4px;
 border: 1px solid rgba(255, 255, 255, 0.2);
 background-color: black;
@@ -51,4 +51,8 @@ li.thread {
 }
 li.thread:first-of-type {
 border-top: 3px solid rgba(255, 165, 0, 0.5);
+}
+div.text {
+word-break: normal;
+margin: 10px 0;
 }

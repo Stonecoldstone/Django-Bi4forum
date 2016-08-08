@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model, forms as auth_forms
-from .models import Thread, Post
+from .models import Thread, Post, SubForum
 
 
 message = _('Username must consist of only lowercase or uppercase letters, numbers, '
@@ -103,3 +103,39 @@ class Info(forms.Form):
 
 class Email(forms.Form):
     new_email = forms.EmailField(help_text='The confirmation mail will be sent to this address.')
+
+
+# SUBFORUMS_CHOICES = [(sub.id, sub.title) for sub in SubForum.objects.all()]
+SEARCH_BY_CHOICES = [
+    ('pt', 'Posts and thread titles'),
+    ('p', 'Only Posts'),
+    ('t', 'Only thread titles'),
+]
+SORT_BY_CHOICES = [
+    #('r', 'Relevance'),
+    ('p', 'Publication Date'),
+    ('rt', 'Rating')
+]
+
+class Search(forms.Form):
+    search = forms.CharField(max_length=50, required=False)
+    user = forms.CharField(max_length=20, required=False)
+    subforums = forms.ModelMultipleChoiceField(required=False,
+                                               queryset=SubForum.objects.all(),
+                                               help_text=
+                                               'Hold "Ctrl" or "Shift" to'
+                                               ' select multiple subforums'
+                                               ' or to remove selection')
+    search_by = forms.ChoiceField(choices=SEARCH_BY_CHOICES, initial='pt',
+                                  widget=forms.RadioSelect)
+    sort_by = forms.ChoiceField(choices=SORT_BY_CHOICES, initial='p',
+                                widget=forms.RadioSelect)
+
+
+    def clean(self):
+        super(Search, self).clean()
+        search = self.cleaned_data.get('search')
+        user = self.cleaned_data.get('user')
+        if not search and not user:
+            raise ValidationError(_('Enter either a search string or username.'),
+                                  code='empty_search')

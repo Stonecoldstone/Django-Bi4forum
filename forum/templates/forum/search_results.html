@@ -1,0 +1,14 @@
+{% extends 'forum/thread.html' %}
+{% block title %}Search Results{% endblock %}
+{% block links %}{% endblock %}
+{% block body %}
+{% for post in query %}
+<ul class="unattached">
+    <li class="thread">
+<p>{{ post.pub_date }}</p>
+<p>{{ post.thread.thread_title }}</p>
+<p>{{ post.full_text }}</p>
+        </li>
+</ul>
+{% endfor %}
+{% endblock %}

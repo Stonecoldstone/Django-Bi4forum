@@ -13,8 +13,11 @@ from django.views.generic.list import ListView
 from django.conf import settings
 from django.utils import html
 from django.utils.translation import ugettext_lazy as _
-
-
+import re
+from django.db.models import Q
+from itertools import chain
+import math
+from operator import attrgetter
 # def main_page(request, cat=None, template='forum/main_page.html'):
 #     if cat is None:
 #         cat = Category.objects.order_by('precedence')
@@ -72,11 +75,10 @@ class CategoryView(ListView):
 
 
 def sub_forum(request, sub_id):
-    threads_on_page = 20
     num_page = request.GET.get('page')
     sub = get_object_or_404(SubForum, id=sub_id)
     threads = sub.thread_set.filter(is_attached=False)
-    paginator = Paginator(threads, threads_on_page)
+    paginator = Paginator(threads, settings.THREADS_ON_PAGE)
     try:
         page = paginator.page(num_page)
     except PageNotAnInteger:
@@ -128,10 +130,9 @@ def thread(request, thread_id):
             post = Post(user=user, full_text=full_text, thread=thread)
             post.save()
             return HttpResponseRedirect(post.get_absolute_url())
-    posts_on_page = 10
     num_page = request.GET.get('page')
     posts = thread.post_set.order_by('pub_date')
-    paginator = Paginator(posts, posts_on_page)
+    paginator = Paginator(posts, settings.POSTS_ON_PAGE)
     post_id = request.GET.get('postid')
     if post_id:
         try:
@@ -380,4 +381,71 @@ def change_email(request):
         form = forms.Email()
     context = {'user': user, 'form': form, 'sent': sent}
     return render(request, 'forum/profile/change_email.html', context)
+
+
+def search(request):
+    form = forms.Search()
+    if request.method == 'GET' and request.GET:
+        form = forms.Search(request.GET)
+        if form.is_valid():
+            words = form.cleaned_data.get('search')
+            user = form.cleaned_data.get('user')
+            subforums = form.cleaned_data.get('subforums')
+            search_by = form.cleaned_data.get('search_by')
+            sort_by = form.cleaned_data.get('sort_by')
+            num_page = request.GET.get('page')
+            get = request.GET.copy()
+            if num_page:
+                del get['page']
+            get = get.urlencode()
+            words = re.split(r'\W+', words)
+            query = Post.objects.all()
+            if user:
+                query = Post.objects.filter(user__username=user)
+            if subforums:
+                query = query.filter(thread__subforum__in=subforums)
+
+            thread_query = Q(thread__thread_title__icontains=words[0])
+            for i in words[1:]:
+                thread_query = thread_query & Q(thread__thread_title__icontains=i)
+            post_query = Q(full_text__icontains=words[0])
+            for i in words[1:]:
+                post_query = post_query & Q(full_text__icontains=i)
+            t_query = query.filter(is_thread=True)
+            t_query = t_query.filter(thread_query | post_query)
+            if search_by == 't':
+                query = t_query
+            else:
+                query = query.filter(is_thread=False)
+                query = query.filter(post_query)
+                if search_by == 'pt':
+                    query = list(chain(query, t_query))
+
+            num_res = len(query)
+
+            order_dict = {'p': 'pub_date', 'rt': 'rating'}
+            query = sorted(query, key=attrgetter(order_dict[sort_by]), reverse=True)
+            paginator = Paginator(query, settings.POSTS_ON_PAGE)
+            try:
+                page = paginator.page(num_page)
+            except PageNotAnInteger:
+                page = paginator.page(1)
+            except EmptyPage:
+                page = paginator.page(paginator.num_pages)
+            init_list = list(paginator.page_range)
+            p_index = page.number - 1
+            i = p_index - 2 if p_index > 2 else 0
+            pages_list = init_list[i:p_index + 3]
+
+            # escape user formatting
+            for post in page:
+                post.full_text = functions.replace_tags(post.full_text, delete=True)
+            return render(request, 'forum/search_form.html', {
+                'query': page, 'pages_list': pages_list, 'form': form,
+                'last_page': paginator.num_pages, 'get': get,
+                'num_page': page.number, 'num_res': num_res,
+            })
+
+    context = {'form': form,}
+    return render(request, 'forum/search_form.html', context)
 
