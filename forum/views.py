@@ -16,7 +16,6 @@ from django.utils.translation import ugettext_lazy as _
 import re
 from django.db.models import Q
 from itertools import chain
-import math
 from operator import attrgetter
 # def main_page(request, cat=None, template='forum/main_page.html'):
 #     if cat is None:

@@ -2,6 +2,5 @@
 forumsite/*
 manage.py
 text sample
-forum/migrations
 forum/__pycache__
 forum/uploads

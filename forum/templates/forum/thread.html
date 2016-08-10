@@ -27,7 +27,7 @@
                 {% endwith %}
                 <br/>
                 <a class="nick" href="{% url 'forum:profile' p.user.id %}">{{ p.user.username }}</a><br/>
-                <a class="messages" href="http://hellkeeper.net/images/tutoriaux/terrainu2/terrainu26.jpg">
+                <a class="messages" href="{% url 'forum:search' %}?user={{ p.user.username }}&search_by=pt&sort_by=p">
                     Messages: {{ p.user.post_set.count }}</a>
             </div>
             <div class="message">
