@@ -13,6 +13,7 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['precedence']
+        verbose_name_plural = 'categories'
 
 
 class SubForumQuerySet(models.QuerySet):
@@ -23,14 +24,17 @@ class SubForumQuerySet(models.QuerySet):
                              distinct=True)
         )
         for entry in self:
-            entry.post_count -= entry.thread_count  # ocherednoy kostil'\ add custom manager or smth
+            # entry.post_count -= entry.thread_count  # ocherednoy kostil'\ add custom manager or smth
             try:
                 entry.last_thread = entry.thread_set.all()[0]
             except IndexError:
                 entry.last_thread = None
                 entry.last_post = None
                 continue
-            entry.last_post = entry.last_thread.post_set.order_by('-pub_date')[0]
+            try:
+                entry.last_post = entry.last_thread.post_set.order_by('-pub_date')[0]
+            except IndexError:
+                entry.last_post = entry.last_thread
         return self
     add_atts.queryset_only = True
 
@@ -54,6 +58,7 @@ class ThreadPostAbstract(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
     rating = models.IntegerField(default=0)
+    full_text = models.TextField()
 
     class Meta:
         abstract = True
@@ -74,7 +79,7 @@ class ThreadPostAbstract(models.Model):
 
 
 class Thread(ThreadPostAbstract):
-    thread_title = models.TextField(max_length=70)
+    thread_title = models.CharField(max_length=70, verbose_name='title')
     subforum = models.ForeignKey(SubForum, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
     post_add_date = models.DateTimeField(default=timezone.now)
@@ -83,8 +88,13 @@ class Thread(ThreadPostAbstract):
     def __str__(self):
         return self.thread_title
 
+    # def get_absolute_url(self):
+    #     return reverse('forum:thread', args=(self.id,))
     def get_absolute_url(self):
-        return reverse('forum:thread', args=(self.id,))
+        string = '{0}?postid={1}#{1}'
+        url = reverse('forum:thread', args=(self.id,))
+        return string.format(url, self.id)
+
 
     class Meta:
         ordering = ['-post_add_date', '-pub_date']
@@ -92,8 +102,8 @@ class Thread(ThreadPostAbstract):
 
 class Post(ThreadPostAbstract):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    full_text = models.TextField()
-    is_thread = models.BooleanField(default=False)
+    # full_text = models.TextField()
+    # is_thread = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s: %s...' % (self.user, self.full_text[:15])

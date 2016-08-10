@@ -17,25 +17,6 @@ import re
 from django.db.models import Q
 from itertools import chain
 from operator import attrgetter
-# def main_page(request, cat=None, template='forum/main_page.html'):
-#     if cat is None:
-#         cat = Category.objects.order_by('precedence')
-#     sub = SubForum.objects.annotate(thread_count=Count('thread', distinct=True),
-#                                     post_count=Count('thread__post', distinct=True))
-#     sub = list(sub)
-#     for s in sub:
-#         s.post_count -= s.thread_count  # ocherednoy kostil'\ add custom manager or smth
-#         try:
-#             s.last_thread = s.thread_set.all()[0]
-#         except IndexError:
-#             s.last_thread = None
-#             s.last_post = None
-#             continue
-#         s.last_post = s.last_thread.post_set.order_by('-pub_date')[0]
-#     context = {
-#       'cat': cat, 'sub': sub,
-#     }
-#     return render(request, template, context)
 
 
 class ForumView(ListView):
@@ -68,12 +49,6 @@ class CategoryView(ListView):
         return context
 
 
-# def category(request, category_id):
-#     cat = get_object_or_404(Category, id=category_id)
-#     cat = [cat]
-#     return main_page(request, cat=cat, template='forum/category.html')
-
-
 def sub_forum(request, sub_id):
     num_page = request.GET.get('page')
     sub = get_object_or_404(SubForum, id=sub_id)
@@ -85,18 +60,20 @@ def sub_forum(request, sub_id):
         page = paginator.page(1)
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
-    posts_on_page = 10
 
     def add_atts(arg):
         for t in arg:
             num_posts = t.post_set.count()
-            range_val = math.ceil(num_posts / posts_on_page)
+            range_val = math.ceil(num_posts / settings.POSTS_ON_PAGE) if num_posts > 0 else 1
             thread_pages = list(range(1, range_val + 1))
             thread_pages = thread_pages[:3]
             t.last_page = range_val
             t.thread_pages = thread_pages
-            t.posts_num = num_posts - 1
-            t.last_post = t.post_set.order_by('-pub_date')[0]
+            t.posts_num = num_posts
+            try:
+                t.last_post = t.post_set.order_by('-pub_date')[0]
+            except IndexError:
+                t.last_post = t
     attach_threads = None
     if page.number == 1:
         attach_threads = sub.thread_set.filter(is_attached=True).order_by('-pub_date')
@@ -154,14 +131,19 @@ def thread(request, thread_id):
     p_index = page.number - 1
     i = p_index - 2 if p_index > 2 else 0
     pages_list = init_list[i:p_index + 3]
-    for p in page.object_list:
+    if page.number == 1:
+        posts = list(page.object_list)
+        posts.insert(0, thread)
+    else:
+        posts = page.object_list
+    for p in posts:
         p.full_text = functions.format_in_view(p.full_text)
         signature = p.user.userprofile.signature
         if signature:
             p.signature = functions.format_in_view(signature)
 
     context = {
-        'thread': thread, 'posts': page.object_list, 'pages_list': pages_list,
+        'thread': thread, 'posts': posts, 'pages_list': pages_list,
         'num_page': page.number, 'form': form, 'last_page': paginator.num_pages,
     }
     return render(request, 'forum/thread.html', context)
@@ -234,19 +216,12 @@ def new_thread(request, sub_id):
     if request.method == 'POST':
         form = forms.NewThread(request.POST, auto_id=True)
         if form.is_valid():
-            thread_title = form.cleaned_data['thread_title']
-            full_text = form.cleaned_data['full_text']
-            # full_text = html.escape(full_text)
-            # full_text = functions.replace_tags(full_text)
             user = request.user
             subforum = SubForum.objects.get(id=sub_id)
-            thread = Thread(user=user, thread_title=thread_title,
-                            subforum=subforum)
+            thread = form.save(commit=False)
+            thread.user = user
+            thread.subforum = subforum
             thread.save()
-            post = Post(user=user, full_text=full_text, thread=thread,
-                        is_thread=True)
-            post.save()
-            # return HttpResponseRedirect(reverse('forum:thread', args=(thread.id, 1)))
             return HttpResponseRedirect(thread.get_absolute_url())
 
     context = {'form': form, 'sub_id': sub_id}
@@ -301,7 +276,6 @@ def profile(request, user_id=None):
     last_threads = user.thread_set.all()[:10]
     post_count = user.post_set.count()
     thread_count = user.thread_set.count()
-    post_count -= thread_count
     signature = functions.format_in_view(user_profile.signature)
     context = {
         'user': user, 'user_profile': user_profile, 'last_posts': last_posts,
@@ -375,11 +349,9 @@ def change_email(request):
                 userkey.email = form.cleaned_data['new_email']
             except ObjectDoesNotExist:
                 userkey = UserKey(user=user, email=form.cleaned_data['new_email'])
-            #user.userkey.email = form.cleaned_data['new_email']
             userkey.save()
             functions.send_confirmation(request, user, userkey.email,
                                         functions.email_change_msg)
-            #return HttpResponseRedirect(reverse('forum:change_profile'))
             sent = True
     else:
         form = forms.Email()
@@ -403,26 +375,56 @@ def search(request):
                 del get['page']
             get = get.urlencode()
             words = re.split(r'\W+', words)
-            query = Post.objects.all()
+            titles_query = Thread.objects.all()
             if user:
-                query = Post.objects.filter(user__username=user)
+                titles_query = Thread.objects.filter(user__username=user)
             if subforums:
-                query = query.filter(thread__subforum__in=subforums)
-            thread_query = Q(thread__thread_title__icontains=words[0])
+                titles_query = titles_query.filter(subforum__in=subforums)
+            title_words = Q(thread_title__icontains=words[0])
             for i in words[1:]:
-                thread_query = thread_query & Q(thread__thread_title__icontains=i)
-            post_query = Q(full_text__icontains=words[0])
-            for i in words[1:]:
-                post_query = post_query & Q(full_text__icontains=i)
-            t_query = query.filter(is_thread=True)
-            t_query = t_query.filter(thread_query | post_query)
+                title_words = title_words & Q(thread_title__icontains=i)
+            titles_query = titles_query.filter(title_words)
             if search_by == 't':
-                query = t_query
+                query = titles_query
             else:
-                query = query.filter(is_thread=False)
-                query = query.filter(post_query)
-                if search_by == 'pt':
-                    query = chain(query, t_query)
+                post_query = Post.objects.all()
+                thread_query = Thread.objects.all()
+                if user:
+                    post_query = Post.objects.filter(user__username=user)
+                    thread_query = Thread.objects.filter(user__username=user)
+                if subforums:
+                    post_query = post_query.filter(thread__subforum__in=subforums)
+                    thread_query = thread_query.filter(subforum__in=subforums)
+                text_query = Q(full_text__icontains=words[0])
+                for i in words[1:]:
+                    text_query = text_query & Q(full_text__icontains=i)
+                post_query = post_query.filter(text_query)
+                thread_query = thread_query.filter(text_query)
+                if search_by == 'p':
+                    query = chain(post_query, thread_query)
+                else:
+                    query = set(chain(titles_query, post_query, thread_query))
+
+            # query = Post.objects.all()
+            # if user:
+            #     query = Post.objects.filter(user__username=user)
+            # if subforums:
+            #     query = query.filter(thread__subforum__in=subforums)
+            # thread_query = Q(thread__thread_title__icontains=words[0])
+            # for i in words[1:]:
+            #     thread_query = thread_query & Q(thread__thread_title__icontains=i)
+            # post_query = Q(full_text__icontains=words[0])
+            # for i in words[1:]:
+            #     post_query = post_query & Q(full_text__icontains=i)
+            # t_query = query.filter(is_thread=True)
+            # t_query = t_query.filter(thread_query | post_query)
+            # if search_by == 't':
+            #     query = t_query
+            # else:
+            #     query = query.filter(is_thread=False)
+            #     query = query.filter(post_query)
+            #     if search_by == 'pt':
+            #         query = chain(query, t_query)
             order_dict = {'p': 'pub_date', 'rt': 'rating'}
             query = sorted(query, key=attrgetter(order_dict[sort_by]), reverse=True)
             paginator = Paginator(query, settings.POSTS_ON_PAGE)

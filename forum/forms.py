@@ -28,6 +28,8 @@ def validate_thread_title_unique(title):
     else:
         raise ValidationError(_('Thread with that name already exists'), code='exists')
 FILE_MAX_SIZE = 10485760
+
+
 def validate_avatar(file):
     content_type = file.content_type.split('/')[0]
     if content_type != 'image':
@@ -80,10 +82,13 @@ class Registration(auth_forms.UserCreationForm):
 
 
 
-class NewThread(forms.Form):
+class NewThread(forms.ModelForm):
     thread_title = forms.CharField(max_length=70, min_length=1, label='Title',
                                    validators=[validate_thread_title_unique])
-    full_text = forms.CharField(widget=forms.Textarea, label='Text')
+    full_text = forms.CharField(widget=forms.Textarea, label='Text', min_length=1)
+    class Meta:
+        model = Thread
+        fields = ['thread_title', 'full_text']
 
 
 class Post(forms.Form):
@@ -108,7 +113,7 @@ class Email(forms.Form):
 # SUBFORUMS_CHOICES = [(sub.id, sub.title) for sub in SubForum.objects.all()]
 SEARCH_BY_CHOICES = [
     ('pt', 'Posts and thread titles'),
-    ('p', 'Only Posts'),
+    ('p', 'Only posts'),
     ('t', 'Only thread titles'),
 ]
 SORT_BY_CHOICES = [
@@ -126,7 +131,7 @@ class Search(forms.Form):
                                                'Hold "Ctrl" or "Shift" to'
                                                ' select multiple subforums'
                                                ' or to remove selection')
-    search_by = forms.ChoiceField(choices=SEARCH_BY_CHOICES, initial='pt',
+    search_by = forms.ChoiceField(choices=SEARCH_BY_CHOICES, initial='p',
                                   widget=forms.RadioSelect)
     sort_by = forms.ChoiceField(choices=SORT_BY_CHOICES, initial='p',
                                 widget=forms.RadioSelect)

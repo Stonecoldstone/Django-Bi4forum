@@ -44,7 +44,7 @@
                 </div>
                 <div class="somelinks">
                     <a href="{{ t.last_post.get_absolute_url }}">
-                        {{ t.last_post.pub_date }}
+                        {{ t.last_post.pub_date|date:"N j, Y, H:i" }}
                     </a> by
                     <a class="secondary" href="{% url 'forum:profile' t.last_post.user.id %}">
                         {{ t.last_post.user.username }}
@@ -91,8 +91,10 @@
                         width="30px" height="30px"/>
                     </div>
                 <div class="somelinks">
-                <a href="{{ t.last_post.get_absolute_url }}">{{ t.last_post.pub_date }}</a> by
-                <a class="secondary" href="{% url 'forum:profile' t.last_post.user.id %}">{{ t.last_post.user.username }}</a>
+                <a href="{{ t.last_post.get_absolute_url }}">{{ t.last_post.pub_date|date:"N j, Y, H:i" }}</a> by
+                <a class="secondary" href="{% url 'forum:profile' t.last_post.user.id %}">
+                    {{ t.last_post.user.username }}
+                </a>
                     </div>
             </div>
         </li>

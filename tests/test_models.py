@@ -12,11 +12,9 @@ class TestModelsMethods(TestCase):
         cls.sub = models.SubForum.objects.create(category=cls.cat, title='First in first', precedence=2)
         for i in range(10):
             thread = models.Thread(subforum=cls.sub, user=cls.user,
-                                 thread_title='{} Thread'.format(i))
+                                   thread_title='{} Thread'.format(i),
+                                   full_text='{} Post'.format(i))
             thread.save()
-            post = models.Post(thread=thread, is_thread=True, user=cls.user,
-                               full_text='{} Post'.format(i))
-            post.save()
             for j in range(10):
                 post = models.Post(thread=thread, user=cls.user,
                                    full_text='{} Thread {} Post'.format(i, j))

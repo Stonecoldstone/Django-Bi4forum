@@ -13,6 +13,10 @@ class ThreadAdmin(admin.ModelAdmin):
     inlines = (PostInline,)
     date_hierarchy = 'pub_date'
     readonly_fields = ('post_add_date',)
+    fields = (
+        ('user', 'subforum'), 'is_attached', 'thread_title',
+        'full_text', 'rating', 'post_add_date'
+    )
 
     def title_display(self, obj):
         return '%s' % obj.thread_title[:30]

@@ -73,13 +73,13 @@
                     {% endif %}
                     <p class="lastthread">
                         <a href="{% url 'forum:thread' s.last_thread.id %}?page=1">
-                            {{ s.last_thread.thread_title|truncatechars:14 }}
+                            {{ s.last_thread.thread_title|truncatechars:15 }}
                         </a>
                         <br/>
                         by <a class="secondary" href="{% url 'forum:profile' s.last_post.user.id %}">
-                            {{ s.last_post.user.username|truncatechars:13 }}
+                            {{ s.last_post.user.username|truncatechars:14 }}
                         </a><br/>
-                        {{ s.last_post.pub_date|date:"d/m/y h:i" }}
+                        {{ s.last_post.pub_date|date:"N j, Y, H:i" }}
                     </p>
                 </div>
                 {% endif %}
