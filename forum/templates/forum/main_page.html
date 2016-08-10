@@ -26,13 +26,20 @@
             <a class="button" href="{% url 'forum:logout' %}?next={{ request.path }}">Log out</a>
         </li>
         <li id="profile">
+            {% comment %}
             {% if request.user.userprofile.avatar %}
             <img src="{{ request.user.userprofile.avatar.url }}" width="45px" height="45px"/>
             {% else %}
             <img src="{% static 'avatar.jpg' %}" width="45px" height="45px"/>
             {% endif %}
+            {% endcomment %}
             <a class="button" href="{% url 'forum:profile' %}">{{ request.user.username }}</a>
         </li>
+        <li id="search">
+            <a class="button" href="{% url 'forum:search' %}">Search</a>
+
+        </li>
+
     </ul>
     {% endif %}
 </div>

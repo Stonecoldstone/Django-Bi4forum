@@ -63,15 +63,16 @@ height: 60px;
 }
 ul.options li {
 float:left;
-height: 35px;
 padding: 0;
-margin-left: 15px;
+margin-left: 10px;
 }
 
 li#profile a {
 float:right;
 }
 .options a {
+width: 60px;
+text-align: center;
 margin-left: 3px;
 margin-right: 5px;
 }
@@ -119,7 +120,7 @@ border-top: 3px solid rgba(255, 165, 0, 0.5);
 a.button, input[type=submit], span.page {
 display: inline-block;
 padding: 3px 8px;
-border: 2px solid rgba(255, 165, 0, 0.1);
+border: 2px solid rgba(255, 165, 0, 0);
 border-radius: 1px;
 background-color: rgba(255, 165, 0, 0.9);
 color: black;

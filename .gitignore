@@ -3,4 +3,3 @@ forumsite/*
 manage.py
 text sample
 forum/__pycache__
-forum/uploads

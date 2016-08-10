@@ -57,7 +57,8 @@ class CategoryView(ListView):
     context_object_name = 'sub'
 
     def get_queryset(self):
-        queryset = SubForum.objects.all().add_atts()
+        queryset = SubForum.objects.filter(category__id=self.kwargs['category_id'])\
+            .add_atts()
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -291,7 +292,11 @@ def profile(request, user_id=None):
             raise Http404
         functions.send_confirmation(request, user)
         return HttpResponseRedirect(reverse('forum:profile'))
-    user_profile = user.userprofile
+    try:
+        user_profile = user.userprofile
+    except ObjectDoesNotExist:
+        user_profile = UserProfile(user=user)
+        user_profile.save()
     last_posts = user.post_set.order_by('-pub_date')[:10]
     last_threads = user.thread_set.all()[:10]
     post_count = user.post_set.count()
