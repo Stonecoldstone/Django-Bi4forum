@@ -404,27 +404,6 @@ def search(request):
                     query = chain(post_query, thread_query)
                 else:
                     query = set(chain(titles_query, post_query, thread_query))
-
-            # query = Post.objects.all()
-            # if user:
-            #     query = Post.objects.filter(user__username=user)
-            # if subforums:
-            #     query = query.filter(thread__subforum__in=subforums)
-            # thread_query = Q(thread__thread_title__icontains=words[0])
-            # for i in words[1:]:
-            #     thread_query = thread_query & Q(thread__thread_title__icontains=i)
-            # post_query = Q(full_text__icontains=words[0])
-            # for i in words[1:]:
-            #     post_query = post_query & Q(full_text__icontains=i)
-            # t_query = query.filter(is_thread=True)
-            # t_query = t_query.filter(thread_query | post_query)
-            # if search_by == 't':
-            #     query = t_query
-            # else:
-            #     query = query.filter(is_thread=False)
-            #     query = query.filter(post_query)
-            #     if search_by == 'pt':
-            #         query = chain(query, t_query)
             order_dict = {'p': 'pub_date', 'rt': 'rating'}
             query = sorted(query, key=attrgetter(order_dict[sort_by]), reverse=True)
             paginator = Paginator(query, settings.POSTS_ON_PAGE)

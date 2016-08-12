@@ -21,9 +21,9 @@ font-weight: normal;
 .message>span>a {
 font-size: 12px;
 }
-p.sign {
+div.sign {
 border-top: 1px solid rgba(255, 165, 0, 0.5);
-padding-top: 5px;
+padding: 6px 0;
 }
 .profile {
 width: 220px;

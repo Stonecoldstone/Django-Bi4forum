@@ -11,17 +11,15 @@
 </head>
 <body>
 <div class="header">
-    {% if not request.user.is_authenticated %}
     <ul class="options">
+    {% if not request.user.is_authenticated %}
         <li id="signup">
             <a class="button" href="{% url 'forum:sign_up' %}?next={{ request.path }}">Sign up</a>
         </li>
         <li id="login">
             <a class="button" href="{% url 'forum:login' %}?next={{ request.path }}">Log in</a>
         </li>
-    </ul>
     {% else %}
-    <ul class="options">
         <li id="logout">
             <a class="button" href="{% url 'forum:logout' %}?next={{ request.path }}">Log out</a>
         </li>
@@ -35,13 +33,11 @@
             {% endcomment %}
             <a class="button" href="{% url 'forum:profile' %}">{{ request.user.username }}</a>
         </li>
+        {% endif %}
         <li id="search">
             <a class="button" href="{% url 'forum:search' %}">Search</a>
-
         </li>
-
     </ul>
-    {% endif %}
 </div>
 <p class="history">
     <a href="{% url 'forum:main_page' %}">Main page</a>{% block links %}{% endblock %}

@@ -1,5 +1,5 @@
 {% extends "forum/main_page.html" %}
-{% block title %} {{ thread.thread_title }} {% endblock %}
+{% block title %}{{ thread.thread_title }}{% endblock %}
 {% block head %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
@@ -34,7 +34,7 @@
                 <span class="date" id="{{ p.id }}"><a href="#{{ p.id }}">{{ p.pub_date }}</a></span><br/>
                 <div class="text">{{ p.full_text|safe|linebreaksbr }}</div>
                 {% if p.user.userprofile.signature %}
-                <p class="sign">{{ p.signature|safe|linebreaksbr }}</p>
+                <div class="sign">{{ p.signature|safe|linebreaksbr }}</div>
                 {% endif %}
             </div>
         </li>

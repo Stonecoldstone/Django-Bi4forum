@@ -65,13 +65,13 @@
     "fields": {
         "user": 51,
         "pub_date": "2016-08-10T15:55:56.608Z",
-        "edit_date": "2016-08-10T16:01:16.012Z",
+        "edit_date": "2016-08-11T16:10:32.210Z",
         "rating": 0,
-        "full_text": "[b]I am living at the Villa Borghese. [i]There is not a crumb of dirt anywhere, nor a chair misplaced.[/i] We are all alone here and we are dead.[/b]\r\n\r\n[u]Last night Boris discovered that he was lousy.[/u][center]\u00a0[lt]I had to shave his armpits and even then the itching did not stop. How can one get lousy in a beautiful place like this? But no matter. We might never have known each other so intimately, Boris and I, had it not been for the lice.[/lt][/center]\r\n[img]/static/avatar.jpg[/img]\r\n[video]/static/LDRedit.MP4[/video]\r\n[color=green]Boris has just given me a summary of his views. He is a weather prophet. The weather will continue bad, he says. There will be more calamities, more death, more despair. Not the slightest indication of a change anywhere. [q]The cancer of time is eating us away. Our heroes have killed themselves, or are killing themselves. The hero, then, is not Time, but Timelessness. We must get in step, a lock step, toward the prison of death.[/q] There is no escape.[/color]",
-        "thread_title": "TROPIC OF CANCER",
+        "full_text": "I can see my baby swingin'\r\nHis Parliament's on fire and his hands are up\r\nOn the balcony and I'm singing\r\nOoh, baby, ooh, baby, I'm in love",
+        "thread_title": "West coast",
         "subforum": 1,
         "is_attached": false,
-        "post_add_date": "2016-08-10T16:01:16.011Z"
+        "post_add_date": "2016-08-11T16:08:03.533Z"
     }
 },
 {
@@ -80,10 +80,10 @@
     "fields": {
         "user": 51,
         "pub_date": "2016-08-10T15:56:28.201Z",
-        "edit_date": "2016-08-10T16:12:26.836Z",
+        "edit_date": "2016-08-11T16:12:18.480Z",
         "rating": 0,
-        "full_text": "It is now the fall of my second year in Paris. I was sent here for a reason I have not yet been able to fathom.\r\n\r\nI have no money, no resources, no hopes. I am the happiest man alive. A year ago, six months ago, I thought that I was an artist. I no longer think about it, I am. Everything that was literature has fallen from me.\r\n\r\nThere are no more books to be written, thank God.\r\n\r\nThis then? This is not a book. This is libel, slander, defamation of character. This is not a book, in the ordinary sense of the word. No, this is a prolonged insult, a gob of spit in the face of Art, a kick in the pants to God, Man, Destiny, Time, Love, Beauty ... what you will. I am going to sing for you, a little off key perhaps but I will sing. I will sing while you croak, I will dance over your dirty corpse.",
-        "thread_title": "The weather will not change.",
+        "full_text": "Down on the West Coast, they got their icons\r\nTheir silver starlets, their Queens of Saigons\r\nAnd you've got the music, you've got the music in you, don't you?",
+        "thread_title": "East coast",
         "subforum": 1,
         "is_attached": true,
         "post_add_date": "2016-08-10T15:56:28.197Z"
@@ -95,10 +95,10 @@
     "fields": {
         "user": 51,
         "pub_date": "2016-08-10T15:57:09.165Z",
-        "edit_date": "2016-08-10T15:57:09.165Z",
+        "edit_date": "2016-08-11T16:11:22.203Z",
         "rating": 0,
-        "full_text": "It is to you, Tania, that I am singing. I wish that I could sing better, more melodiously, but then perhaps you would never have consented to listen to me. You have heard the others sing and they have left you cold. They sang too beautifully, or not beautifully enough.",
-        "thread_title": "I am singing.",
+        "full_text": "Down on the West Coast they got a sayin'\r\n\"If you're not drinkin' then you're not playin'.\"\r\nBut you've got the music, you've got the music in you, don't you?",
+        "thread_title": "Coast west",
         "subforum": 2,
         "is_attached": false,
         "post_add_date": "2016-08-10T15:57:09.160Z"
@@ -125,9 +125,9 @@
     "fields": {
         "user": 49,
         "pub_date": "2016-08-10T16:01:16.027Z",
-        "edit_date": "2016-08-10T16:01:16.027Z",
+        "edit_date": "2016-08-11T16:08:03.534Z",
         "rating": 0,
-        "full_text": "[b]I am living at the Villa Borghese. [i]There is not a crumb of dirt anywhere, nor a chair misplaced.[/i] We are all alone here and we are dead.[/b]\r\n\r\n[u]Last night Boris discovered that he was lousy.[/u][center] [lt]I had to shave his armpits and even then the itching did not stop. How can one get lousy in a beautiful place like this? But no matter. We might never have known each other so intimately, Boris and I, had it not been for the lice.[/lt][/center]\r\n[img]/static/avatar.jpg[/img]\r\n[video]/static/LDRedit.MP4[/video]\r\n[color=green]Boris has just given me a summary of his views. He is a weather prophet. The weather will continue bad, he says. There will be more calamities, more death, more despair. Not the slightest indication of a change anywhere. [q]The cancer of time is eating us away. Our heroes have killed themselves, or are killing themselves. The hero, then, is not Time, but Timelessness. We must get in step, a lock step, toward the prison of death.[/q] There is no escape.[/color]",
+        "full_text": "Test test test",
         "thread": 640
     }
 },
@@ -148,7 +148,7 @@
     "pk": 41,
     "fields": {
         "user": 49,
-        "signature": "[lt][i][b]I am the admin[/b][u]And[/u]Here will be every possible tag.[/i][/lt]\r\n[center][a=/main_page/]Lorem ipsum dolor sit amet, consectetur[/a]adipiscing elit. Curabitur eu congue nulla. [/center][img]/static/avatar.jpg[/img]Vivamus vitae iaculis tortor, eget molestie sapien. Aenean tincidunt velit quis odio interdum, at malesuada eros lobortis. Fusce lectus sem, elementum vel ullamcorper et, ullamcorper rhoncus lorem.",
+        "signature": "Default signature.",
         "avatar": "avatars/8WUy_rtuf1o.jpg"
     }
 },

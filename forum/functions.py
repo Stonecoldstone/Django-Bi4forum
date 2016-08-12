@@ -161,6 +161,7 @@ def replace_tags(string, delete=False):
             string = re.sub(pattern, repl, string, (re.DOTALL | re.IGNORECASE))
     return string
 
+
 def format_in_view(text):
     text = html.escape(text)
     text = replace_tags(text)
