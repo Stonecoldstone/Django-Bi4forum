@@ -2,7 +2,7 @@ import io
 from PIL import Image
 from django.core.files import File
 import random
-from .models import UserKey
+from . import models
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -78,13 +78,14 @@ email_change_msg = '''
     %(link)s
 '''
 
+
 def send_confirmation(request, user, email=None, message=default_msg):
     key = random.SystemRandom().getrandbits(32)
     try:
-        key_model = UserKey.objects.get(user=user)
+        key_model = models.UserKey.objects.get(user=user)
         key_model.key = key
     except ObjectDoesNotExist:
-        key_model = UserKey(user=user, key=key)
+        key_model = models.UserKey(user=user, key=key)
     key_model.save()
     msg_dict = {
         'username': user.username, 'forum_name': settings.FORUM_NAME,

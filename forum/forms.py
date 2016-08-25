@@ -7,7 +7,7 @@ from .models import Thread, Post, SubForum
 
 
 message = _('Username must consist of only lowercase or uppercase letters, numbers, '
-            'or _@+.- characters')
+            'or _@+.- characters.')
 validate_username_chars = RegexValidator(regex=r'^[a-zA-Z0-9_+.@-]+$', message=message)
 
 
@@ -17,7 +17,7 @@ def validate_username_unique(username):
     except ObjectDoesNotExist:
         return
     else:
-        raise ValidationError(_('Username already exists'), code='exists')
+        raise ValidationError(_('Username already exists.'), code='exists')
 
 
 def validate_thread_title_unique(title):
@@ -26,7 +26,7 @@ def validate_thread_title_unique(title):
     except ObjectDoesNotExist:
         return
     else:
-        raise ValidationError(_('Thread with that name already exists'), code='exists')
+        raise ValidationError(_('Thread with that name already exists.'), code='exists')
 FILE_MAX_SIZE = 10485760
 
 
@@ -112,7 +112,7 @@ class Email(forms.Form):
 
 # SUBFORUMS_CHOICES = [(sub.id, sub.title) for sub in SubForum.objects.all()]
 SEARCH_BY_CHOICES = [
-    ('pt', 'Posts and thread titles'),
+    ('pt', 'Posts, threads and titles'),
     ('p', 'Only posts'),
     ('t', 'Only thread titles'),
 ]
@@ -131,7 +131,7 @@ class Search(forms.Form):
                                                'Hold "Ctrl" or "Shift" to'
                                                ' select multiple subforums'
                                                ' or to remove selection')
-    search_by = forms.ChoiceField(choices=SEARCH_BY_CHOICES, initial='p',
+    search_by = forms.ChoiceField(choices=SEARCH_BY_CHOICES, initial='pt',
                                   widget=forms.RadioSelect)
     sort_by = forms.ChoiceField(choices=SORT_BY_CHOICES, initial='p',
                                 widget=forms.RadioSelect)

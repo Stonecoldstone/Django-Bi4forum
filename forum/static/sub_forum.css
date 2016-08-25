@@ -15,7 +15,7 @@ margin: 0 1%;
 li.thread {
 border: 3px solid rgba(255, 165, 0, 0.5);
 border-top:none;
-padding: 5px 10px;
+padding: 5px 20px;
 }
 li.h3 {
 width: 100%%;
@@ -36,7 +36,7 @@ margin-left: 10px;
 }
 div.thread {
 width: 30%;
-margin: 10px; 0;
+margin: 5px 0px;
 font-size: 14px;
 }
 a.main {

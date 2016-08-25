@@ -2,6 +2,9 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from textwrap import shorten
+from . import functions
+from django.core.files import File
 
 
 class Category(models.Model):
@@ -56,26 +59,19 @@ class SubForum(models.Model):
 class ThreadPostAbstract(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(auto_now_add=True)
-    edit_date = models.DateTimeField(auto_now=True)
+    edit_date = models.DateTimeField(default=timezone.now)
     rating = models.IntegerField(default=0)
     full_text = models.TextField()
+    raw_text = models.TextField()
+
+    def save(self, *args, **kwargs):
+        self.raw_text = functions.replace_tags(self.full_text, delete=True)
+        super(ThreadPostAbstract, self).save(*args, **kwargs)
+
+
 
     class Meta:
         abstract = True
-
-# class CustomQuerySet(models.QuerySet):
-#     def add_atts(self, posts_on_page=10, pages_displayed=3):
-#         for t in self:
-#             num_posts = t.post_set.count()
-#             range_val = math.ceil(num_posts / posts_on_page)
-#             thread_pages = list(range(1, range_val + 1))
-#             thread_pages = thread_pages[:pages_displayed]
-#             t.last_page = range_val
-#             t.thread_pages = thread_pages
-#             t.posts_num = num_posts - 1
-#             t.last_post = t.post_set.order_by('-pub_date')[0]
-#         return self
-#     add_atts.queryset_only = True
 
 
 class Thread(ThreadPostAbstract):
@@ -106,7 +102,8 @@ class Post(ThreadPostAbstract):
     # is_thread = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s: %s...' % (self.user, self.full_text[:15])
+        text = shorten(self.full_text, 20, placeholder='...')
+        return '%s: %s' % (self.user, text)
 
     def save(self, *args, **kwargs):
         thread = self.thread
@@ -119,8 +116,8 @@ class Post(ThreadPostAbstract):
         return '{0}?postid={1}#{1}'.\
             format(reverse('forum:thread', args=(thread_id,)), self.id)
 
-    def print_profile(self):
-        return self.full_text[:25]
+    # def print_profile(self):
+    #     return self.full_text[:25]
 
     # class Meta:
     #     permissions = (
@@ -133,6 +130,23 @@ class UserProfile(models.Model):
     signature = models.TextField(default='', max_length=300, blank=True, null=True)
     avatar = models.ImageField(max_length=200, upload_to='avatars', blank=True,
                                null=True)
+    def save(self, *args, **kwargs):
+        if self.avatar:
+            if self.pk is not None:
+                orig = UserProfile.objects.get(pk=self.pk)
+                orig = orig.avatar
+            else:
+                orig = False
+            if orig != self.avatar:
+                size = (200, 200)
+                resized_img = functions.resize(size, bytes=self.avatar.read())
+                name = self.avatar.name
+                orig.delete(save=False)
+                file = File(resized_img)
+                self.avatar.save(name, file, save=False)
+        super(UserProfile, self).save(*args, **kwargs)
+
+
 
 class UserKey(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

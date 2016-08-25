@@ -61,86 +61,105 @@
 },
 {
     "model": "forum.thread",
-    "pk": 640,
+    "pk": 649,
     "fields": {
         "user": 51,
-        "pub_date": "2016-08-10T15:55:56.608Z",
-        "edit_date": "2016-08-11T16:10:32.210Z",
-        "rating": 0,
-        "full_text": "I can see my baby swingin'\r\nHis Parliament's on fire and his hands are up\r\nOn the balcony and I'm singing\r\nOoh, baby, ooh, baby, I'm in love",
-        "thread_title": "West coast",
-        "subforum": 1,
-        "is_attached": false,
-        "post_add_date": "2016-08-11T16:08:03.533Z"
-    }
-},
-{
-    "model": "forum.thread",
-    "pk": 641,
-    "fields": {
-        "user": 51,
-        "pub_date": "2016-08-10T15:56:28.201Z",
-        "edit_date": "2016-08-11T16:12:18.480Z",
-        "rating": 0,
-        "full_text": "Down on the West Coast, they got their icons\r\nTheir silver starlets, their Queens of Saigons\r\nAnd you've got the music, you've got the music in you, don't you?",
-        "thread_title": "East coast",
+        "pub_date": "2016-08-25T11:08:46.266Z",
+        "edit_date": "2016-08-25T11:08:46.204Z",
+        "rating": 10,
+        "full_text": "Down on the West Coast they got a sayin'\r\n\"If you're not drinkin' then you're not playin'.\"\r\nBut you've got the music, you've got the music in you, don't you?",
+        "raw_text": "Down on the West Coast they got a sayin'\r\n\"If you're not drinkin' then you're not playin'.\"\r\nBut you've got the music, you've got the music in you, don't you?",
+        "thread_title": "West Coast",
         "subforum": 1,
         "is_attached": true,
-        "post_add_date": "2016-08-10T15:56:28.197Z"
+        "post_add_date": "2016-08-25T11:08:46.355Z"
     }
 },
 {
     "model": "forum.thread",
-    "pk": 642,
+    "pk": 650,
     "fields": {
         "user": 51,
-        "pub_date": "2016-08-10T15:57:09.165Z",
-        "edit_date": "2016-08-11T16:11:22.203Z",
-        "rating": 0,
-        "full_text": "Down on the West Coast they got a sayin'\r\n\"If you're not drinkin' then you're not playin'.\"\r\nBut you've got the music, you've got the music in you, don't you?",
-        "thread_title": "Coast west",
-        "subforum": 2,
+        "pub_date": "2016-08-25T11:09:56.555Z",
+        "edit_date": "2016-08-25T11:09:56.530Z",
+        "rating": 15,
+        "full_text": "I can see my baby swingin'\r\nHis Parliament's on fire and his hands are up\r\nOn the balcony and I'm singing\r\nOoh, baby, ooh, baby, I'm in love",
+        "raw_text": "I can see my baby swingin'\r\nHis Parliament's on fire and his hands are up\r\nOn the balcony and I'm singing\r\nOoh, baby, ooh, baby, I'm in love",
+        "thread_title": "East Coast",
+        "subforum": 1,
         "is_attached": false,
-        "post_add_date": "2016-08-10T15:57:09.160Z"
+        "post_add_date": "2016-08-25T11:10:54.461Z"
     }
 },
 {
     "model": "forum.thread",
-    "pk": 646,
+    "pk": 651,
     "fields": {
         "user": 49,
-        "pub_date": "2016-08-10T16:13:17.940Z",
-        "edit_date": "2016-08-10T16:13:36.259Z",
+        "pub_date": "2016-08-25T11:10:26.642Z",
+        "edit_date": "2016-08-25T11:10:26.619Z",
+        "rating": 2,
+        "full_text": "Here's the test thread",
+        "raw_text": "Here's the test thread",
+        "thread_title": "Test thread",
+        "subforum": 2,
+        "is_attached": false,
+        "post_add_date": "2016-08-25T11:10:26.620Z"
+    }
+},
+{
+    "model": "forum.thread",
+    "pk": 652,
+    "fields": {
+        "user": 51,
+        "pub_date": "2016-08-25T11:11:42.803Z",
+        "edit_date": "2016-08-25T11:11:42.775Z",
         "rating": 0,
-        "full_text": "Some test thread",
-        "thread_title": "Some test thread",
+        "full_text": "I can see my sweet boy swayin'\r\nHe's crazy y Cubano como yo, my love\r\nOn the balcony and I'm saying\r\nMove baby, move baby, I'm in love",
+        "raw_text": "I can see my sweet boy swayin'\r\nHe's crazy y Cubano como yo, my love\r\nOn the balcony and I'm saying\r\nMove baby, move baby, I'm in love",
+        "thread_title": "Coast West",
         "subforum": 4,
         "is_attached": false,
-        "post_add_date": "2016-08-10T16:13:36.258Z"
+        "post_add_date": "2016-08-25T11:11:42.805Z"
     }
 },
 {
     "model": "forum.post",
-    "pk": 22550,
+    "pk": 22558,
     "fields": {
-        "user": 49,
-        "pub_date": "2016-08-10T16:01:16.027Z",
-        "edit_date": "2016-08-11T16:08:03.534Z",
-        "rating": 0,
-        "full_text": "Test test test",
-        "thread": 640
+        "user": 51,
+        "pub_date": "2016-08-25T11:08:46.360Z",
+        "edit_date": "2016-08-25T11:06:56Z",
+        "rating": 5,
+        "full_text": "Down on the West Coast I get this feeling\r\nLike it all could happen that's why I'm leaving\r\nYou for the moment, you for the moment, Boy Blue, yeah, you",
+        "raw_text": "Down on the West Coast I get this feeling\r\nLike it all could happen that's why I'm leaving\r\nYou for the moment, you for the moment, Boy Blue, yeah, you",
+        "thread": 649
     }
 },
 {
     "model": "forum.post",
-    "pk": 22551,
+    "pk": 22559,
     "fields": {
         "user": 49,
-        "pub_date": "2016-08-10T16:13:36.274Z",
-        "edit_date": "2016-08-10T16:13:36.274Z",
+        "pub_date": "2016-08-25T11:09:56.559Z",
+        "edit_date": "2016-08-25T11:09:01Z",
+        "rating": 2,
+        "full_text": "test post test postpostpost",
+        "raw_text": "test post test postpostpost",
+        "thread": 650
+    }
+},
+{
+    "model": "forum.post",
+    "pk": 22560,
+    "fields": {
+        "user": 51,
+        "pub_date": "2016-08-25T11:11:42.807Z",
+        "edit_date": "2016-08-25T11:11:01Z",
         "rating": 0,
-        "full_text": "Some test post",
-        "thread": 646
+        "full_text": "Down on the West Coast, they got their icons\r\nTheir silver starlets, their Queens of Saigons\r\nAnd you've got the music, you've got the music in you, don't you?",
+        "raw_text": "Down on the West Coast, they got their icons\r\nTheir silver starlets, their Queens of Saigons\r\nAnd you've got the music, you've got the music in you, don't you?",
+        "thread": 652
     }
 },
 {
@@ -149,7 +168,7 @@
     "fields": {
         "user": 49,
         "signature": "Default signature.",
-        "avatar": "avatars/8WUy_rtuf1o.jpg"
+        "avatar": "avatars/-X-8dQ2Wrfs.jpg"
     }
 },
 {
@@ -157,6 +176,15 @@
     "pk": 42,
     "fields": {
         "user": 51,
+        "signature": "",
+        "avatar": "avatars/article-2094580-118A7A20000005DC-894_468x631.jpg"
+    }
+},
+{
+    "model": "forum.userprofile",
+    "pk": 43,
+    "fields": {
+        "user": 50,
         "signature": "",
         "avatar": ""
     }

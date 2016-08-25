@@ -6,16 +6,17 @@ from django.contrib.auth.models import User
 
 class PostInline(admin.StackedInline):
     model = Post
+    exclude = ('raw_text',)
 
 
 
 class ThreadAdmin(admin.ModelAdmin):
     inlines = (PostInline,)
     date_hierarchy = 'pub_date'
-    readonly_fields = ('post_add_date',)
+    readonly_fields = ('post_add_date', 'pub_date', 'edit_date')
     fields = (
         ('user', 'subforum'), 'is_attached', 'thread_title',
-        'full_text', 'rating', 'post_add_date'
+        'full_text', 'rating', 'pub_date', 'edit_date', 'post_add_date'
     )
 
     def title_display(self, obj):
@@ -28,6 +29,10 @@ class ThreadAdmin(admin.ModelAdmin):
 
 class PostAdmin(admin.ModelAdmin):
     date_hierarchy = 'pub_date'
+    readonly_fields = ('pub_date', 'edit_date')
+    fields = (
+        ('user', 'thread'), 'full_text', 'rating', 'pub_date', 'edit_date',
+    )
 
 admin.site.register(Post, PostAdmin)
 

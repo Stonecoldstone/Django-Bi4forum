@@ -71,13 +71,15 @@ def sub_forum(request, sub_id):
             t.thread_pages = thread_pages
             t.posts_num = num_posts
             try:
-                t.last_post = t.post_set.order_by('-pub_date')[0]
-            except IndexError:
+                t.last_post = t.post_set.latest('pub_date')
+            except ObjectDoesNotExist:
                 t.last_post = t
     attach_threads = None
     if page.number == 1:
         attach_threads = sub.thread_set.filter(is_attached=True).order_by('-pub_date')
+        attach_threads = attach_threads.select_related('user__userprofile')
         add_atts(attach_threads)
+    page.object_list = page.object_list.select_related('user__userprofile')
     add_atts(page.object_list)
     init_list = list(paginator.page_range)
     p_index = page.number - 1
@@ -104,11 +106,14 @@ def thread(request, thread_id):
             full_text = form.cleaned_data['full_text']
             # full_text = html.escape(full_text)
             # full_text = functions.replace_tags(full_text)
+            # raw_text = functions.replace_tags(full_text, delete=True)
             post = Post(user=user, full_text=full_text, thread=thread)
             post.save()
             return HttpResponseRedirect(post.get_absolute_url())
     num_page = request.GET.get('page')
     posts = thread.post_set.order_by('pub_date')
+    posts = list(posts)
+    posts.insert(0, thread)
     paginator = Paginator(posts, settings.POSTS_ON_PAGE)
     post_id = request.GET.get('postid')
     if post_id:
@@ -131,11 +136,12 @@ def thread(request, thread_id):
     p_index = page.number - 1
     i = p_index - 2 if p_index > 2 else 0
     pages_list = init_list[i:p_index + 3]
-    if page.number == 1:
-        posts = list(page.object_list)
-        posts.insert(0, thread)
-    else:
-        posts = page.object_list
+    # page.object_list = page.object_list.select_related('user__userprofile')
+    # if page.number == 1:
+    #     posts = list(page.object_list)
+    #     posts.insert(0, thread)
+    # else:
+    #     posts = page.object_list
     for p in posts:
         p.full_text = functions.format_in_view(p.full_text)
         signature = p.user.userprofile.signature
@@ -143,7 +149,7 @@ def thread(request, thread_id):
             p.signature = functions.format_in_view(signature)
 
     context = {
-        'thread': thread, 'posts': posts, 'pages_list': pages_list,
+        'thread': thread, 'posts': page.object_list, 'pages_list': pages_list,
         'num_page': page.number, 'form': form, 'last_page': paginator.num_pages,
     }
     return render(request, 'forum/thread.html', context)
@@ -217,10 +223,11 @@ def new_thread(request, sub_id):
         form = forms.NewThread(request.POST, auto_id=True)
         if form.is_valid():
             user = request.user
-            subforum = SubForum.objects.get(id=sub_id)
+            subforum = get_object_or_404(SubForum, id=sub_id)
             thread = form.save(commit=False)
             thread.user = user
             thread.subforum = subforum
+            # thread.raw_text = functions.replace_tags(thread.full_text, delete=True)
             thread.save()
             return HttpResponseRedirect(thread.get_absolute_url())
 
@@ -272,7 +279,8 @@ def profile(request, user_id=None):
     except ObjectDoesNotExist:
         user_profile = UserProfile(user=user)
         user_profile.save()
-    last_posts = user.post_set.order_by('-pub_date')[:10]
+    last_posts = user.post_set.order_by('-pub_date')[:10]\
+        .select_related('thread')
     last_threads = user.thread_set.all()[:10]
     post_count = user.post_set.count()
     thread_count = user.thread_set.count()
@@ -297,10 +305,11 @@ def change_avatar(request):
         form = forms.File(request.POST, request.FILES)
         if form.is_valid():  # HAVE TO LIMIT UPLOADED FILE SIZE (in template) ETC
             upfile = request.FILES['upload_file']
-            avatar_field = user_profile.avatar
-            size = (200, 200)
+            # avatar_field = user_profile.avatar
+            # size = (200, 200)
             try:
-                functions.handle_avatar(upfile, avatar_field, size)
+                user_profile.avatar = upfile
+                user_profile.save()
                 return HttpResponseRedirect(reverse('forum:change_avatar'))
             except IOError:
                 form.add_error('upload_file', ValidationError(_('File type is not supported')
@@ -370,6 +379,7 @@ def search(request):
             search_by = form.cleaned_data.get('search_by')
             sort_by = form.cleaned_data.get('sort_by')
             num_page = request.GET.get('page')
+            onlyposts = request.GET.get('onlyposts')
             get = request.GET.copy()
             if num_page:
                 del get['page']
@@ -395,13 +405,13 @@ def search(request):
                 if subforums:
                     post_query = post_query.filter(thread__subforum__in=subforums)
                     thread_query = thread_query.filter(subforum__in=subforums)
-                text_query = Q(full_text__icontains=words[0])
+                text_query = Q(raw_text__icontains=words[0])
                 for i in words[1:]:
-                    text_query = text_query & Q(full_text__icontains=i)
+                    text_query = text_query & Q(raw_text__icontains=i)
                 post_query = post_query.filter(text_query)
                 thread_query = thread_query.filter(text_query)
                 if search_by == 'p':
-                    query = chain(post_query, thread_query)
+                    query = post_query
                 else:
                     query = set(chain(titles_query, post_query, thread_query))
             order_dict = {'p': 'pub_date', 'rt': 'rating'}
@@ -419,14 +429,14 @@ def search(request):
             pages_list = init_list[i:p_index + 3]
 
             # escape user formatting
-            for post in page:
-                post.full_text = functions.replace_tags(post.full_text, delete=True)
+            # for post in page:
+            #     post.full_text = functions.replace_tags(post.full_text, delete=True)
             num_res = len(query)
             return render(request, 'forum/search_form.html', {
                 'query': page, 'pages_list': pages_list, 'form': form,
                 'last_page': paginator.num_pages, 'get': get,
                 'num_page': page.number, 'num_res': num_res,
             })
-    context = {'form': form,}
+    context = {'form': form}
     return render(request, 'forum/search_form.html', context)
 

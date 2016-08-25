@@ -31,7 +31,9 @@
                     Messages: {{ p.user.post_set.count|add:p.user.thread_set.count }}</a>
             </div>
             <div class="message">
-                <span class="date" id="{{ p.id }}"><a href="#{{ p.id }}">{{ p.pub_date }}</a></span><br/>
+                <span class="date" id="{{ p.id }}">
+                    <a href="#{{ p.id }}">{{ p.pub_date|date:"N j, Y, H:i" }}</a>
+                </span><br/>
                 <div class="text">{{ p.full_text|safe|linebreaksbr }}</div>
                 {% if p.user.userprofile.signature %}
                 <div class="sign">{{ p.signature|safe|linebreaksbr }}</div>

@@ -1,5 +1,6 @@
 from unittest import TestCase
 from forum import functions
+
 import random
 
 
@@ -41,6 +42,8 @@ class TestReplaceTags(TestCase):
             func_res = functions.replace_tags(' '.join(mark_list))
             html_list = ' '.join(html_list)
             self.assertEqual(func_res, html_list)
+
+
 
 
 
