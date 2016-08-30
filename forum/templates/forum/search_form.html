@@ -11,7 +11,10 @@
     <li class="h3">{{ num_res }} results were found</li>
     {% for data in query %}
     <li class="thread ">
-<p>{{ data.pub_date }}</p>
+<p class="secondary">
+    {{ data.pub_date|date:"N j, Y, H:i" }} by
+    <a href="{% url 'forum:profile' data.user.id%}" class="secondary">{{ data.user.username }}</a>
+</p>
         {% if data.thread %}
 <a href="{{ data.get_absolute_url }}">{{ data.thread.thread_title }}</a>
         {% else %}

@@ -8,11 +8,7 @@ FORUM_NAME = 'The Knitting Forum'
 POSTS_ON_PAGE = 20
 THREADS_ON_PAGE = 20
 
-EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'gggserg179@gmail.com'
-EMAIL_HOST_PASSWORD = 'SH3366081'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
 
 MEDIA_ROOT = '/home/userwoozer/Documents/pythondev/forumsite/forum/uploads/'
 MEDIA_URL = '/media/'

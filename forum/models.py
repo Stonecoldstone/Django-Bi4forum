@@ -68,10 +68,30 @@ class ThreadPostAbstract(models.Model):
         self.raw_text = functions.replace_tags(self.full_text, delete=True)
         super(ThreadPostAbstract, self).save(*args, **kwargs)
 
+    def is_edited(self):
+        boolean = False
+        if self.edit_date > self.pub_date:
+            boolean = True
+        return boolean
 
+    # def is_liked(self, user):
+    #     query = self.users_liked.filter(id=user.id)
+    #     res = False
+    #     if query:
+    #         res = True
+    #     return res
+    #
+    # def is_disliked(self, user):
+    #     query = self.users_disliked.filter(id=user.id)
+    #     res = False
+    #     if query:
+    #         res = True
+    #     return res
 
     class Meta:
         abstract = True
+
+
 
 
 class Thread(ThreadPostAbstract):
@@ -79,6 +99,8 @@ class Thread(ThreadPostAbstract):
     subforum = models.ForeignKey(SubForum, on_delete=models.CASCADE)
     is_attached = models.BooleanField(default=False)
     post_add_date = models.DateTimeField(default=timezone.now)
+    users_liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='threads_liked')
+    users_disliked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='threads_disliked')
     # objects = CustomQuerySet.as_manager()
 
     def __str__(self):
@@ -91,13 +113,14 @@ class Thread(ThreadPostAbstract):
         url = reverse('forum:thread', args=(self.id,))
         return string.format(url, self.id)
 
-
     class Meta:
         ordering = ['-post_add_date', '-pub_date']
 
 
 class Post(ThreadPostAbstract):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+    users_liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_liked')
+    users_disliked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_disliked')
     # full_text = models.TextField()
     # is_thread = models.BooleanField(default=False)
 
@@ -106,23 +129,15 @@ class Post(ThreadPostAbstract):
         return '%s: %s' % (self.user, text)
 
     def save(self, *args, **kwargs):
-        thread = self.thread
-        thread.post_add_date = timezone.now()
-        thread.save()
+        if self.pk is None:
+            self.thread.post_add_date = timezone.now()
+            self.thread.save()
         super(Post, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         thread_id = self.thread.id
         return '{0}?postid={1}#{1}'.\
             format(reverse('forum:thread', args=(thread_id,)), self.id)
-
-    # def print_profile(self):
-    #     return self.full_text[:25]
-
-    # class Meta:
-    #     permissions = (
-    #         ('change_post_instance', 'Can change the post'),
-    #     )
 
 
 class UserProfile(models.Model):

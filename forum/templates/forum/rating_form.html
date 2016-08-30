@@ -1,0 +1,6 @@
+<form class="rating" action="{% url 'forum:rating' obj id %}" method="post">
+    {% csrf_token %}
+    <input class="like" name="like" type="submit" value="+"/>
+    <span class="rating">{{ rating }}</span>
+    <input class="dislike" name="dislike" type="submit" value="-"/>
+</form>

@@ -10,14 +10,46 @@ from django.contrib.auth import views as auth_views
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.views.generic.list import ListView
+from django.views.generic.edit import UpdateView
 from django.conf import settings
-from django.utils import html
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 import re
-from django.db.models import Q
+from django.db.models import Q, F
 from itertools import chain
 from operator import attrgetter
+from django.utils import timezone
 
+
+def rating(request, obj, obj_id):
+    obj_dict = {'thread': Thread, 'post': Post}
+    user = request.user
+    if request.method == 'POST':
+        like = request.POST.get('like')
+        dislike = request.POST.get('dislike')
+        model = obj_dict[obj]
+        obj = get_object_or_404(model, id=obj_id)
+        result = 0
+        if like:
+            relate = obj.users_liked
+            digit = 1
+        elif dislike:
+            relate = obj.users_disliked
+            digit = -1
+        else:
+            return HttpResponseRedirect(obj.get_absolute_url())
+        try:
+            relate.get(id=user.id)
+        except ObjectDoesNotExist:
+            relate.add(user)
+            result += digit
+        else:
+            relate.remove(user)
+            result -= digit
+        model.objects.filter(id=obj_id).update(rating=F('rating') + result)
+        return HttpResponseRedirect(obj.get_absolute_url())
+    else:
+        raise Http404
 
 class ForumView(ListView):
     template_name = 'forum/main_page.html'
@@ -94,7 +126,7 @@ def sub_forum(request, sub_id):
 
 def thread(request, thread_id):
     form = forms.Post(auto_id=True)
-    thread = get_object_or_404(Thread, id=thread_id)
+    thrd = get_object_or_404(Thread, id=thread_id)
     if request.method == 'POST':
         user = request.user
         if not user.is_authenticated():
@@ -103,17 +135,15 @@ def thread(request, thread_id):
             return HttpResponseRedirect(reverse('forum:activation_required'))
         form = forms.Post(request.POST)
         if form.is_valid():
-            full_text = form.cleaned_data['full_text']
-            # full_text = html.escape(full_text)
-            # full_text = functions.replace_tags(full_text)
-            # raw_text = functions.replace_tags(full_text, delete=True)
-            post = Post(user=user, full_text=full_text, thread=thread)
+            post = form.save(commit=False)
+            post.user = user
+            post.thread = thrd
             post.save()
             return HttpResponseRedirect(post.get_absolute_url())
     num_page = request.GET.get('page')
-    posts = thread.post_set.order_by('pub_date')
+    posts = thrd.post_set.order_by('pub_date')
     posts = list(posts)
-    posts.insert(0, thread)
+    posts.insert(0, thrd)
     paginator = Paginator(posts, settings.POSTS_ON_PAGE)
     post_id = request.GET.get('postid')
     if post_id:
@@ -136,20 +166,16 @@ def thread(request, thread_id):
     p_index = page.number - 1
     i = p_index - 2 if p_index > 2 else 0
     pages_list = init_list[i:p_index + 3]
-    # page.object_list = page.object_list.select_related('user__userprofile')
-    # if page.number == 1:
-    #     posts = list(page.object_list)
-    #     posts.insert(0, thread)
-    # else:
-    #     posts = page.object_list
-    for p in posts:
+    for p in page.object_list:
         p.full_text = functions.format_in_view(p.full_text)
         signature = p.user.userprofile.signature
         if signature:
             p.signature = functions.format_in_view(signature)
+        # p.is_liked = p.is_liked(user)
+        # p.is_disliked = p.is_disliked(user)
 
     context = {
-        'thread': thread, 'posts': page.object_list, 'pages_list': pages_list,
+        'thread': thrd, 'posts': page.object_list, 'pages_list': pages_list,
         'num_page': page.number, 'form': form, 'last_page': paginator.num_pages,
     }
     return render(request, 'forum/thread.html', context)
@@ -241,13 +267,82 @@ def login(request, **kwargs):
                             authentication_form=forms.AuthenticationFormSub,
                             **kwargs)
 
+
+class EditThread(UpdateView):
+    model = Thread
+    form_class = forms.NewThreadEdit
+    template_name = 'forum/edit_thread.html'
+
+    @method_decorator(decorators.login_required)
+    @method_decorator(decorators.user_passes_test(functions.active,
+                                                  login_url='forum:activation_required',
+                                                  redirect_field_name=None))
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.id != obj.user.id:
+            raise Http404
+        return super(EditThread, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.edit_date = timezone.now()
+        return super(EditThread, self).form_valid(form)
+
+class EditPost(UpdateView):
+    model = Post
+    form_class = forms.Post
+    template_name = 'forum/edit_post.html'
+
+    @method_decorator(decorators.login_required)
+    @method_decorator(decorators.user_passes_test(functions.active,
+                                                  login_url='forum:activation_required',
+                                                  redirect_field_name=None))
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if self.request.user.id != obj.user.id:
+            raise Http404
+        return super(EditPost, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.edit_date = timezone.now()
+        return super(EditPost, self).form_valid(form)
+
+
+# class Edit(UpdateView):
+#     template_name = 'forum/edit.html'
+#     args_dict = {'thread': (forms.NewThreadEdit, Thread), 'post': (forms.Post, Post)}
 #
-# def post_edit(request, post_id):
-#     user = request.user
-#     if user.has_perm('forum.change_post_instance'):
-#         return render(request, 'forum/change_post.html')
-#     else:
-#         return HttpResponseRedirect(reverse('forum:main_page'))
+#     def dispatch(self, request, *args, **kwargs):
+#         kinds = ['thread', 'post']
+#         if self.kwargs['kind'] not in kinds:
+#             raise Http404
+#         obj = self.get_object()
+#         if self.request.user.id != obj.user.id:
+#             raise Http404
+#         return super(Edit, self).dispatch(request, *args, **kwargs)
+#
+#     def get_form_class(self):
+#         arg = self.kwargs['kind']
+#         # if arg == 'thread':
+#         #     return forms.NewThreadEdit
+#         # else:
+#         #     return forms.Post
+#         return self.args_dict[arg][0]
+#
+#     def get_object(self):
+#         model = self.args_dict[self.kwargs['kind']][1]
+#         pk = self.kwargs['pk']
+#         obj = get_object_or_404(model, id=pk)
+#         return obj
+
+
+
+def password_change(request):
+    context = {'user_profile': request.user.userprofile}
+    return auth_views.password_change(request,
+                                      template_name='forum/profile/change_password.html',
+                                      post_change_redirect='forum:password_changed',
+                                      password_change_form=forms.PasswordChange,
+                                      current_app=None, extra_context=context)
 
 
 @decorators.login_required
@@ -364,9 +459,8 @@ def change_email(request):
             sent = True
     else:
         form = forms.Email()
-    context = {'user': user, 'form': form, 'sent': sent}
+    context = {'user': user, 'user_profile': user.userprofile, 'form': form, 'sent': sent}
     return render(request, 'forum/profile/change_email.html', context)
-
 
 def search(request):
     form = forms.Search()
@@ -379,7 +473,6 @@ def search(request):
             search_by = form.cleaned_data.get('search_by')
             sort_by = form.cleaned_data.get('sort_by')
             num_page = request.GET.get('page')
-            onlyposts = request.GET.get('onlyposts')
             get = request.GET.copy()
             if num_page:
                 del get['page']
@@ -427,10 +520,6 @@ def search(request):
             p_index = page.number - 1
             i = p_index - 2 if p_index > 2 else 0
             pages_list = init_list[i:p_index + 3]
-
-            # escape user formatting
-            # for post in page:
-            #     post.full_text = functions.replace_tags(post.full_text, delete=True)
             num_res = len(query)
             return render(request, 'forum/search_form.html', {
                 'query': page, 'pages_list': pages_list, 'form': form,

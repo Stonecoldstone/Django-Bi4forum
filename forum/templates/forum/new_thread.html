@@ -3,12 +3,7 @@
 {% block body %}
 <form class="post" action="{% url 'forum:new_thread' sub_id %}" method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
-    {% for f in form %}
-        {{ f.errors }}
-        {{ f.label_tag }}<br/>
-        {{ f }}<br/>
-    {% endfor %}
-    <input class="excluded" type="submit" value="Post"/>
+    {% include 'forum/form.html' %}
+    <input class="excluded" type="submit" value="Create thread"/>
 </form>
 {% endblock %}

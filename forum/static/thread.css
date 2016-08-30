@@ -6,19 +6,29 @@ display: inline-block;
 margin: 5px 0;
 }
 .message {
+width: 75%;
 font-size: 16px;
 margin-top: 6px;
 min-height: 201px;
 vertical-align: top;
 border-bottom: 1px solid rgba(255, 165, 0, 0.5);
-width: 75%;
-word-break: normal;
 text-align: justify;
+margin-bottom: 13px;
+}
+li.thread {
+min-width: 600px;
+position: relative;
+}
+.m_options {
+display: inline-block;
+position: absolute;
+bottom: 18px;
+right: 30px;
 }
 .message a {
 font-weight: normal;
 }
-.message>span>a {
+.message span.date>a {
 font-size: 12px;
 }
 div.sign {
@@ -28,7 +38,7 @@ padding: 6px 0;
 .profile {
 width: 220px;
 text-align: center;
-word-break: break-all;
+word-wrap: break-word;
 }
 .profile img, .profile a {
 display: inline-block;
@@ -45,14 +55,12 @@ font-size: 14px;
 padding: 1px 4px;
 border: 1px solid rgba(255, 255, 255, 0.2);
 background-color: black;
+margin-right: 20px;
 }
 
-li.thread {
-}
 li.thread:first-of-type {
 border-top: 3px solid rgba(255, 165, 0, 0.5);
 }
-div.text {
-word-break: normal;
+.text {
 margin: 10px 0;
 }

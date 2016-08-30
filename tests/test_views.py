@@ -225,6 +225,9 @@ class TestThreadView(TestCase):
         resp = self.client.get(url)
         self.assertContains(resp, form_html)
 
+    def test_change_buttons_only_for_logged_in_users_posts(self):
+        pass
+
 
 
 
@@ -279,9 +282,7 @@ class TestThreadViewPost(TestCase):
         resp = self.client.post(self.url, self.data)
         self.assertEqual(resp.status_code, 302)
         post = models.Post.objects.order_by('-pub_date')[0]
-        post_url = reverse('forum:thread', args=(post.thread.id,))
-        post_url = '{0}?postid={1}#{1}'.format(post_url, post.id)
-        self.assertEqual(resp['Location'], post_url)
+        self.assertEqual(resp['Location'], post.get_absolute_url())
 
     @unittest.skipUnless(bs4_imported, reason=skip_reason)
     def test_post_content_escaped_after_formatting(self):
@@ -706,7 +707,7 @@ class TestProfileView(TestCase):
 
     def test_mail_confirmation_button(self):
         # ensure active user doesn't see that button in his own profile
-        html = '<input class="excluded" type="submit" value="Click to resend a confirmation mail"/>'
+        html = '<input class="excluded" type="submit" value="Click to resend confirmation mail"/>'
         resp = self.client.get(self.url)
         self.assertNotContains(resp, html, html=True)
         # ensure active user doesn't see that button in inactive user's profile
@@ -741,6 +742,64 @@ class TestProfileView(TestCase):
         # test_html = div.contents[1]
         # tag = soup.div
         # self.assertEqual(type(test_html), type(tag))
+
+
+class TestChangeThreadView(TestCase):
+    fixtures = ['users.json', 'forum_testdata.json']
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.usr = User.objects.get(username='Lana')
+        cls.thrd = models.Thread.objects.get(id=649)
+        cls.url = reverse('forum:edit_thread', args=(cls.thrd.id,))
+        cls.data = {'thread_title': 'Hey', 'full_text': 'Dude'}
+
+    def test_anonymous_user_redirected(self):
+        resp1 = self.client.get(self.url)
+        resp2 = self.client.post(self.url, self.data)
+        for resp in (resp1, resp2):
+            self.assertEqual(resp.status_code, 302)
+            url = parse.urlsplit(resp['Location'])
+            self.assertEqual(url.path, reverse(settings.LOGIN_URL))
+
+    def test_inactive_user_redirected(self):
+        usr = User.objects.get(username='user_inactive')
+        self.client.force_login(usr)
+        resp1 = self.client.get(self.url)
+        resp2 = self.client.post(self.url, self.data)
+        for resp in (resp1, resp2):
+            self.assertEqual(resp.status_code, 302)
+            self.assertEqual(resp['Location'], reverse('forum:activation_required'))
+
+    def test_user_can_change_his_own_threads(self):
+        self.client.force_login(self.usr)
+        resp = self.client.post(self.url, self.data)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], self.thrd.get_absolute_url())
+        thrd = models.Thread.objects.get(id=651)
+        self.assertNotEqual(thrd.user.id, self.usr.id)
+        url = reverse('forum:edit_thread', args=(thrd.id,))
+        resp = self.client.post(url, self.data)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_changes_are_applied(self):
+        self.client.force_login(self.usr)
+        self.assertNotEqual(self.thrd.thread_title, self.data['thread_title'])
+        self.assertNotEqual(self.thrd.full_text, self.data['full_text'])
+        self.thrd.refresh_from_db()
+        self.assertEqual(self.thrd.thread_title, self.data['thread_title'])
+        self.assertEqual(self.thrd.full_text, self.data['full_text'])
+
+class TestPostChangeView(TestCase):
+    pass
+
+class TestRating(TestCase):
+    pass
+
+
+
+
+
 
 
 

@@ -1,0 +1,20 @@
+<ul>
+            {% for error in form.non_field_errors %}
+            <li class="error">
+                {{ error }}
+            </li>
+            {% endfor %}
+            {% for f in form %}
+            {% for error in f.errors %}
+            <li class="error">
+                {{ error }}
+            </li>
+            {% endfor %}
+            <li>
+                {{ f }}
+                {% if f.help_text %}
+                <p class="helptext">{{ f.help_text }}</p>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>

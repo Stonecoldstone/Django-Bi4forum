@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model, forms as auth_forms
 from .models import Thread, Post, SubForum
+from django.contrib.auth.password_validation import password_validators_help_texts as pswd_help
 
 
 message = _('Username must consist of only lowercase or uppercase letters, numbers, '
@@ -27,6 +28,7 @@ def validate_thread_title_unique(title):
         return
     else:
         raise ValidationError(_('Thread with that name already exists.'), code='exists')
+
 FILE_MAX_SIZE = 10485760
 
 
@@ -59,7 +61,7 @@ class Registration(auth_forms.UserCreationForm):
                                help_text=_('Username that will be displayed on forum and'
                                            ' used for authentication.\n'
                                            'May contain 1-20 letters, numbers,'
-                                           ' and _, @, +, ., - characters'),
+                                           ' and _@+.- characters'),
                                validators=[
                                    validate_username_chars,
                                    validate_username_unique
@@ -67,7 +69,8 @@ class Registration(auth_forms.UserCreationForm):
     email = forms.EmailField(label='* Email')
     password1 = forms.CharField(label=_('* Password'),
                                 strip=False,
-                                widget=forms.PasswordInput)
+                                widget=forms.PasswordInput,
+                                help_text='\n'.join(pswd_help()))
     password2 = forms.CharField(label=_('* Password confirmation'),
                                 widget=forms.PasswordInput,
                                 strip=False,
@@ -90,10 +93,17 @@ class NewThread(forms.ModelForm):
         model = Thread
         fields = ['thread_title', 'full_text']
 
+class NewThreadEdit(NewThread):
+    thread_title = forms.CharField(max_length=70, min_length=1, label='Title')
 
-class Post(forms.Form):
-    full_text = forms.CharField(widget=forms.Textarea, label='Add new post',
+
+class Post(forms.ModelForm):
+    full_text = forms.CharField(widget=forms.Textarea, label='',
                                 min_length=1)
+
+    class Meta:
+        model = Post
+        fields = ['full_text']
 
 
 class File(forms.Form):
@@ -144,3 +154,10 @@ class Search(forms.Form):
         if not search and not user:
             raise ValidationError(_('Enter either a search string or username.'),
                                   code='empty_search')
+
+
+class PasswordChange(auth_forms.PasswordChangeForm):
+    new_password1 = forms.CharField(label=_("New password"),
+                                    widget=forms.PasswordInput,
+                                    strip=False,
+                                    help_text='\n'.join(pswd_help()))

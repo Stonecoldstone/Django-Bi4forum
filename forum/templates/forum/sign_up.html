@@ -1,7 +1,7 @@
 {% extends 'forum/main_page.html' %}
 {% block title %}Sign Up{% endblock %}
 {% block body %}
-<form action="{% url 'forum:sign_up' %}?next={{ redirect_to }}" method="post">
+<form class="centered" action="{% url 'forum:sign_up' %}?next={{ redirect_to }}" method="post">
     {% csrf_token %}
     {% include 'forum/form.html' %}
 

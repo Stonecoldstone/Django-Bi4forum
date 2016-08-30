@@ -90,8 +90,11 @@ background-color: rgb(147, 55, 237);
 color: black;
 }*/
 
+
 #add a {
 margin: 10px 0 15px;
+width: 150px;
+padding: 8px;
 font-size: 18px;
-padding: 5px 8px;
+text-align: center;
 }

@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from . import views
 from django.contrib.auth import views as auth_views
-
+from .forms import PasswordChange
 
 app_name = 'forum'
 urlpatterns = [
@@ -30,7 +30,18 @@ urlpatterns = [
     url(r'^change_avatar/$', views.change_avatar, name='change_avatar'),
     url(r'^change_info/$', views.change_info, name='change_info'),
     url(r'^change_email/$', views.change_email, name='change_email'),
+    url(r'^change_password/$', views.password_change, name='change_password'),
+    url(r'^password_changed/$', auth_views.password_change_done,
+        {
+            'template_name': 'forum/profile/password_changed.html',
+            'extra_context': {'redirect_to': 'forum:profile'}
+        },
+        name='password_changed'),
     url(r'^search/$', views.search, name='search'),
+    # url(r'^(?P<pk>\d+)/(?P<kind>(thread|post))/edit/$', views.Edit.as_view(), name='edit'),
+    url(r'^(?P<pk>\d+)/edit_thread/$', views.EditThread.as_view(), name='edit_thread'),
+    url(r'^(?P<pk>\d+)/edit_post/$', views.EditPost.as_view(), name='edit_post'),
+    url(r'^(?P<obj>(thread|post))/(?P<obj_id>\d+)/rating/$', views.rating, name='rating'),
 
 
 ]  #not suitable for production!!

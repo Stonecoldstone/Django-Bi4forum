@@ -33,22 +33,66 @@
             <div class="message">
                 <span class="date" id="{{ p.id }}">
                     <a href="#{{ p.id }}">{{ p.pub_date|date:"N j, Y, H:i" }}</a>
-                </span><br/>
+                </span>
+                {% if p.thread_title %}
+                {% include 'forum/rating_form.html' with obj='thread' id=p.id rating=p.rating %}
+                {% else %}
+                {% include 'forum/rating_form.html' with obj='post' id=p.id rating=p.rating %}
+                {% endif %}
+                <br/>
                 <div class="text">{{ p.full_text|safe|linebreaksbr }}</div>
                 {% if p.user.userprofile.signature %}
                 <div class="sign">{{ p.signature|safe|linebreaksbr }}</div>
                 {% endif %}
             </div>
+            {% if p.user.id == request.user.id %}
+            <div class="m_options">
+                {% if p.thread_title %}
+                <a class="edit button" href="{% url 'forum:edit_thread' p.id %}">Edit</a>
+                {% else %}
+                <a class="edit button" href="{% url 'forum:edit_post' p.id %}">Edit</a>
+                {% endif %}
+                    </div>
+            {% endif %}
+            {% comment %}
+            <table class="message">
+                <tr>
+                    <td>
+                        <span class="date" id="{{ p.id }}">
+                    <a href="#{{ p.id }}">{{ p.pub_date|date:"N j, Y, H:i" }}</a>
+                </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><div class="text">{{ p.full_text|safe|linebreaksbr }}</div></td>
+                </tr>
+                {% if p.user.id == request.user.id %}
+                <tr>
+                    <td class="m_options">
+                {% if p.thread_title %}
+                <a class="edit button" href="{% url 'forum:edit_thread' p.id %}">Edit</a>
+                {% else %}
+                <a class="edit button" href="{% url 'forum:edit_post' p.id %}">Edit</a>
+                {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% if p.user.userprofile.signature %}
+                <tr>
+                    <td class="sign">
+                        {{ p.signature|safe|linebreaksbr }}
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
+            {% endcomment %}
         </li>
         {% endfor %}
     </ul>
     {% if request.user.is_authenticated and request.user.is_active %}
     <form id="post" class="post" action="{% url 'forum:thread' thread.id %}" method="post">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        {{ form.full_text.errors }}
-        {{ form.full_text.label_tag }}<br/>
-        {{ form.full_text }}<br/>
+        {% include 'forum/post_form.html' %}
         <input class="excluded" type="submit" value="Submit"/>
     </form>
     {% endif %}
