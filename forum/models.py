@@ -65,14 +65,24 @@ class ThreadPostAbstract(models.Model):
     raw_text = models.TextField()
 
     def save(self, *args, **kwargs):
-        self.raw_text = functions.replace_tags(self.full_text, delete=True)
+        text_diff = self.text_diff()
+        pk_bool = self.pk is None
+        if pk_bool or text_diff:
+            self.raw_text = functions.replace_tags(self.full_text, delete=True)
+        if not pk_bool and (text_diff or self.title_diff()):
+            self.edit_date = timezone.now()
         super(ThreadPostAbstract, self).save(*args, **kwargs)
 
     def is_edited(self):
-        boolean = False
-        if self.edit_date > self.pub_date:
-            boolean = True
-        return boolean
+        return self.pub_date < self.edit_date
+
+    def text_diff(self):
+        orig = self.__class__.objects.get(pk=self.pk)
+        return self.full_text == orig.full_text
+
+    def title_diff(self):
+        return False
+
 
     # def is_liked(self, user):
     #     query = self.users_liked.filter(id=user.id)
@@ -106,23 +116,24 @@ class Thread(ThreadPostAbstract):
     def __str__(self):
         return self.thread_title
 
-    # def get_absolute_url(self):
-    #     return reverse('forum:thread', args=(self.id,))
     def get_absolute_url(self):
         string = '{0}?postid={1}#{1}'
         url = reverse('forum:thread', args=(self.id,))
         return string.format(url, self.id)
 
+    def title_diff(self):
+        orig = Thread.objects.get(pk=self.pk)
+        return self.thread_title == orig.thread_title
+
     class Meta:
         ordering = ['-post_add_date', '-pub_date']
+
 
 
 class Post(ThreadPostAbstract):
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     users_liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_liked')
     users_disliked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='posts_disliked')
-    # full_text = models.TextField()
-    # is_thread = models.BooleanField(default=False)
 
     def __str__(self):
         text = shorten(self.full_text, 20, placeholder='...')
@@ -130,8 +141,8 @@ class Post(ThreadPostAbstract):
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.thread.post_add_date = timezone.now()
-            self.thread.save()
+            thrd_id = self.thread.id
+            Thread.objects.filter(id=thrd_id).update(post_add_date=timezone.now())
         super(Post, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -159,6 +170,9 @@ class UserProfile(models.Model):
                 orig.delete(save=False)
                 file = File(resized_img)
                 self.avatar.save(name, file, save=False)
+            # check if avatars are compared at all:
+            # else:
+            #     raise ValueError
         super(UserProfile, self).save(*args, **kwargs)
 
 
