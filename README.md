@@ -21,13 +21,13 @@ is used by some part of the forum. Probably you can omit the admin app, although
 3. In your project's **settings.py** file add **'forum'** into **INSTALLED_APPS**.
 4. In your project's **urls.py** file include urls from the forum into **urlpatterns** list, for example:  
     ```
-    from django.conf.urls import url, include
-    from django.contrib import admin
-    urlpatterns = [
-        url(r'^admin/', admin.site.urls),
-        url(r'^forum/', include('forum.urls')),
-        ]
-    ```
+from django.conf.urls import url, include
+from django.contrib import admin
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^forum/', include('forum.urls')),
+    ]
+```
 5. In order to be sure that all forum features would work correctly and not crash, check that the following settings
  are set properly:
    * Email settings (**EMAIL_HOST**, **EMAIL_HOST_USER**, **EMAIL_HOST_PASSWORD**, **EMAIL_PORT**, **EMAIL_USE_TLS**, **EMAIL_USE_SSL**)
