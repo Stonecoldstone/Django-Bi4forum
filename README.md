@@ -2,7 +2,7 @@
 Bi4forum is a simple forum application, which I was developing while learning django.
 
 It implements basic forum functions, such as search, custom markdown, user profile, listing subforums, threads, posts etc.
-It is hosted at https://Bi4.pythonanywhere.com, so there you can check almost every feature of it.
+It is hosted at https://Bi4.pythonanywhere.com/forum, so there you can check almost every feature of it.
 
 It was built under python 3.5 and Django 1.9.
 
