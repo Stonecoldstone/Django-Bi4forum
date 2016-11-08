@@ -1,0 +1,106 @@
+{% extends "forum/main_page.html" %}
+{% load staticfiles %}
+{% load forum_tags %}
+{% block title %}{{ thread.thread_title }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'thread.css' %}"/>
+<script>
+$(document).ready(function() {
+$('.rating-bar').on('click', 'button', function(event){
+var button, action;
+button = $(this);
+action = button.attr('data-action');
+$.ajax({
+url: '{% url 'forum:rating' %}',
+data: {
+action: button.attr('data-action'),
+id: button.attr('data-id'),
+object: button.attr('data-obj'),
+csrfmiddlewaretoken: csrftoken
+},
+type: 'POST',
+dataType: 'json'
+}).done(function(json) {
+if (json.status === 'ok') {
+var mapObj = {
+'like': 'liked',
+'dislike': 'disliked'
+};
+button.toggleClass(mapObj[action]);
+button.parent().children('span').html(json.count);
+}
+});
+
+event.preventDefault();
+});
+});
+</script>
+<script src="{% static 'rating.js' %}"></script>
+<script src="{% static 'spoiler.js' %}"></script>
+{{ form.media }}
+{% endblock %}
+{% block links %}
+{% with thread.subforum as subforum %}
+/<a href="{% url 'forum:category' subforum.category.id %}">{{ subforum.category.title }}</a>/
+<a href="{% url 'forum:sub_forum' subforum.id %}?page=1">{{ subforum.title }}</a>
+{% endwith %}
+{% endblock %}
+{% block body %}
+<div id="body">
+    <h1>{{ thread.thread_title }}</h1>
+    <ul class="unattached">
+        {% for p in posts %}
+        <li class="thread">
+            <div class="profile">
+                {% with p.user.userprofile.avatar as user_avatar %}
+                {% if user_avatar %}
+                <img src="{{user_avatar.url }}" alt="Avatar"/>
+                {% else %}
+                <img src="{% static 'avatar.jpg' %}" alt="Avatar"/>
+                {% endif %}
+                {% endwith %}
+                <br/>
+                <a class="nick" href="{% url 'forum:profile' p.user.id %}">{{ p.user.username }}</a><br/>
+                <a class="messages" href="{% url 'forum:search' %}?user={{ p.user.username }}&search_by=pt&sort_by=p">
+                    Messages: {{ p.user.post_set.count|add:p.user.thread_set.count }}</a>
+            </div>
+            <div class="message">
+                <span class="date" id="{{ p.id }}">
+                    <a href="#{{ p.id }}">{{ p.pub_date|date:"N j, Y, H:i" }}</a>
+                </span>
+                {% if request.user.is_authenticated %}
+                {% if p.thread_title %}
+                {% include 'forum/rating_form.html' with obj='thread' id=p.id instance=p %}
+                {% else %}
+                {% include 'forum/rating_form.html' with obj='post' id=p.id instance=p %}
+                {% endif %}
+                {% endif %}
+                <br/>
+                <div class="text">{{ p.full_text|replace_markdown|linebreaksbr }}</div>
+                {% if p.user.userprofile.signature %}
+                <div class="sign">{{ p.signature|replace_markdown|linebreaksbr }}</div>
+                {% endif %}
+            </div>
+            {% if p.user.id == request.user.id %}
+            <div class="m_options">
+                {% if p.thread_title %}
+                <a class="edit button" href="{% url 'forum:edit_thread' p.id %}">Edit</a>
+                {% else %}
+                <a class="edit button" href="{% url 'forum:edit_post' p.id %}">Edit</a>
+                {% endif %}
+                    </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% if request.user.is_authenticated and request.user.is_active %}
+    <form id="post" class="post" action="{% url 'forum:thread' thread.id %}" method="post">
+        {% csrf_token %}
+        {% include 'forum/post_form.html' %}
+        <input class="excluded" type="submit" value="Submit"/>
+    </form>
+    {% endif %}
+</div>
+{% include 'forum/paginator.html' %}
+{% endblock %}

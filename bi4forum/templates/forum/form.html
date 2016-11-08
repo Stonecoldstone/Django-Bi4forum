@@ -1,0 +1,25 @@
+{% if form.non_field_errors %}
+<ul>
+{% for error in form.non_field_errors %}
+    <li class="error">
+        {{ error }}
+    </li>
+{% endfor %}
+    </ul>
+{% endif %}
+<ul>
+    {% for f in form %}
+    {{ f.label_tag }}
+    {% for error in f.errors %}
+    <li class="error">
+        {{ error }}
+    </li>
+    {% endfor %}
+    <li>
+        {{ f }}
+        {% if f.help_text %}
+        <p class="helptext">{{ f.help_text|linebreaksbr }}</p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,42 @@
+{% load forum_tags %}
+{% load staticfiles %}
+{% for t in threads %}
+<li class="thread">
+    <div class="thread">
+        <a class="main" href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a><br/>
+        by <a class="secondary" href="{% url 'forum:profile' t.user.id %}">
+        {{ t.user.username }}
+    </a>
+    </div>
+    {% get_thread_info t as thread_info %}
+    <div class="pages">
+        {% for p in thread_info.thread_pages %}
+        <a href="{% url 'forum:thread' t.id %}?page={{ p }}">{{ p }}</a>
+        {% endfor %}
+        {% if thread_info.last_page not in thread_info.thread_pages %}
+        ...<a href="{% url 'forum:thread' t.id %}?page={{ thread_info.last_page }}">
+        {{ thread_info.last_page }}</a>
+        {% endif %}
+    </div>
+    <div class="posts">
+        Posts: {{ thread_info.posts_num }}
+    </div>
+    <div class="threadinfo">
+        <div class="pic">
+            <img src="
+                    {% if thread_info.last_post.user.userprofile.avatar %}
+                    {{ thread_info.last_post.user.userprofile.avatar.url }}
+                    {% else %}
+                    {% static 'avatar.jpg' %}
+                    {% endif %}"
+                    width="30px" height="30px"/>
+        </div>
+        <div class="somelinks">
+            <a href="{{ thread_info.last_post.get_absolute_url }}">{{ thread_info.last_post.pub_date|date:"N j, Y, H:i" }}</a> by
+            <a class="secondary" href="{% url 'forum:profile' thread_info.last_post.user.id %}">
+                {{ thread_info.last_post.user.username }}
+            </a>
+        </div>
+    </div>
+    </li>
+    {% endfor %}

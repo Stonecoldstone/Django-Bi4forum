@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'main_page.css' %}"/>
+
+    <title>{% block title %}My forum{% endblock %} </title>
+    <meta charset="UTF-8"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="{% static 'csrf_cookie.js' %}"></script>
+    <script src="{% static 'messages.js' %}"></script>
+    {% block head %}
+    {% load forum_tags %}
+    {% endblock %}
+</head>
+<body>
+<div class="header">
+    <ul class="options">
+    {% if not request.user.is_authenticated %}
+        <li id="signup">
+            <a class="button" href="{% url 'forum:sign_up' %}?next={{ request.path }}">Sign up</a>
+        </li>
+        <li id="login">
+            <a class="button" href="{% url 'forum:login' %}?next={{ request.path }}">Sign in</a>
+        </li>
+    {% else %}
+        <li id="logout">
+            <a class="button" href="{% url 'forum:logout' %}?next={{ request.path }}">Log out</a>
+        </li>
+        <li id="profile">
+            {% comment %}
+            {% if request.user.userprofile.avatar %}
+            <img src="{{ request.user.userprofile.avatar.url }}" width="45px" height="45px"/>
+            {% else %}
+            <img src="{% static 'avatar.jpg' %}" width="45px" height="45px"/>
+            {% endif %}
+            {% endcomment %}
+            <a class="button" href="{% url 'forum:profile' %}">{{ request.user.username }}</a>
+        </li>
+        {% endif %}
+        <li id="search">
+            <a class="button" href="{% url 'forum:search' %}">Search</a>
+        </li>
+    </ul>
+</div>
+<p class="history">
+    <a href="{% url 'forum:main_page' %}">Main page</a>{% block links %}{% endblock %}
+</p>
+{% block body %}
+{% for c in cat %}
+    <ul class="subforum">
+    <li class="header"><a href="{% url 'forum:category' c.id %}">{{ c.title }}</a></li>
+    {% if c.subforum_set.all %}
+        {% for s in sub %}
+        {% if s.category == c %}
+        <li class="subforum">
+                <div class="subforum">
+                    <p class="subtitle">
+                        <a href="{% url 'forum:sub_forum' s.id %}?page=1">{{ s.title }}</a>
+                        <br/>
+                        <span class="subdescr">{{ s.description }}</span>
+                    </p>
+                </div>
+            {% get_subforum_info s as sub_info %}
+                <div class="stats">
+                    <p>Threads: {{ sub_info.threads_num }}<br/>Posts: {{ sub_info.posts_num }}</p>
+                </div>
+                {% if sub_info.last_thread %}
+                <div class="lastthread">
+                    {% if sub_info.last_post.user.userprofile.avatar %}
+                    <img src={{ sub_info.last_post.user.userprofile.avatar.url }} width="45px" height="45px"/>
+                    {% else %}
+                    <img src="{% static 'avatar.jpg' %}" width="45px" height="45px"/>
+                    {% endif %}
+                    <p class="lastthread">
+                        <a href="{% url 'forum:thread' sub_info.last_thread.id %}?page=1">
+                            {{ sub_info.last_thread.thread_title|truncatechars:15 }}
+                        </a>
+                        <br/>
+                        by <a class="secondary" href="{% url 'forum:profile' sub_info.last_post.user.id %}">
+                            {{ sub_info.last_post.user.username|truncatechars:14 }}
+                        </a><br/>
+                        {{ sub_info.last_post.pub_date|date:"N j, Y, H:i" }}
+                    </p>
+                </div>
+                {% endif %}
+        </li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endfor %}
+{% endblock %}
+</body>
+</html>

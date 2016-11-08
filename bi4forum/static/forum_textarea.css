@@ -1,0 +1,81 @@
+body {
+        background-color: black;
+        }
+        .fta_container {
+        min-width: 600px;
+        }
+
+        .fta_button_row {
+        list-style-type:none;
+        margin: 0;
+        padding: 0 10px;
+        width: 100%;
+        margin: 0;
+        border: 3px solid #A6650C;
+        height: 50px;
+        }
+        .fta_button_row li {
+        display: inline-block;
+        margin: 10px 10px 10px 0px;
+        }
+        .fta_input {
+        margin: 0;
+        border: 3px solid #A6650C;
+        border-top: none;
+        padding: 10px;
+        resize: none;
+        width: 100%;
+        overflow: auto;
+        font-family: Arial;
+        font-size: 16px;
+        background-color: #141414;
+        color: white;
+        }
+        .fta_button_row > li > span {
+        	border-radius: 2px;
+        	background-repeat: no-repeat;
+        	background-image: url("icons2.png");
+        	background-size: 360px 30px;
+        	display: inline-block;
+        	background-color: #F09B00;
+        	/*background-color: orange;*/
+        	width: 30px;
+        	height: 30px;
+        	cursor: pointer;
+        }
+        .fta_button_row > li > span:hover {
+        	background-color: #40C8FF;
+        }
+
+        li.fta_color, li.fta_size {
+        	position: relative;
+        }
+
+        .color_dropdown, .size_dropdown{
+        	background-color: black;
+        	color: white;
+        	position: absolute;
+        	width: 80px;
+        	box-shadow: 1px 1px 3px white;
+        }
+        .color_dropdown_ul, .size_dropdown_ul {
+        	padding: 0;
+        	list-style-type: none;
+        }
+        .color_dropdown_ul>li, .size_dropdown_ul>li {
+        	margin: 0;
+        	cursor: pointer;
+        	display: block;
+        	padding: 5px 10px;
+        }
+         .color_dropdown_ul>li:hover, .size_dropdown_ul>li:hover {
+         	background-color:  #141414;
+         }
+
+        .hidden {
+        	display: none;
+        }
+       .fta_input:focus {
+        	border-color: #40C8FF;
+        	transition: 0.3s;
+        }

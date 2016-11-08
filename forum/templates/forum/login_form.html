@@ -1,5 +1,0 @@
-<form class="centered" action="{% url 'forum:login' %}?next={{ next }}" method="post">
-    {% csrf_token %}
-    {% include 'forum/form.html' %}
-    <input class="excluded" type="submit" value="Log in"/>
-</form>

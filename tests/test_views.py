@@ -26,7 +26,7 @@ skip_reason = 'Beautiful Soup is required for this test.'
 
 
 class TestForumView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -34,7 +34,7 @@ class TestForumView(TestCase):
         cls.search = '<a class="button" href="/main_page/search/">Search</a>'
         cls.logout = '<a class="button" href="/main_page/logout/?next=/main_page/">Log out</a>'
         cls.profile = '<a class="button" href="/main_page/profile/">{}</a>'.format(cls.user.username)
-        cls.login = '<a class="button" href="/main_page/login/?next=/main_page/">Log in</a>'
+        cls.login = '<a class="button" href="/main_page/login/?next=/main_page/">Sign in</a>'
         cls.signup = '<a class="button" href="/main_page/sign_up/?next=/main_page/">Sign up</a>'
         cls.logged_in = [cls.logout, cls.profile]
         cls.anonymous = [cls.login, cls.signup]
@@ -69,7 +69,7 @@ class TestForumView(TestCase):
 
 
 class TestCategoryView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     def test_category_matches(self):
         response = self.client.get(reverse('forum:category', args=(2,)))
@@ -89,7 +89,7 @@ class TestCategoryView(TestCase):
 
 
 class TestSubForumView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -119,42 +119,43 @@ class TestSubForumView(TestCase):
         threads = response.context['threads']
         self.assertEqual(threads[0], thread)
 
-    def test_thread_atts(self):
-        """
-        Test attributes that is created for every thread instance in a view.
-        """
-        thread = models.Thread.objects.get(id=650)
-        for i in range(25):
-            post = models.Post(thread=thread, user=self.user,
-                               full_text='{}'.format(i))
-            post.save()
-        posts_num = thread.post_set.count()
-        response = self.client.get('{}?page=1'.format(self.url_1))
-        thread = response.context['threads'][0]
-        self.assertEqual(thread.last_page, 2)
-        self.assertEqual(thread.thread_pages, [1, 2])
-        self.assertEqual(thread.posts_num, posts_num)
+    # def test_thread_atts(self):
+    #     """
+    #     Test attributes that is created for every thread instance in a view.
+    #     """
+    #     thread = models.Thread.objects.get(id=656)
+    #     for i in range(25):
+    #         post = models.Post(thread=thread, user=self.user,
+    #                            full_text='{}'.format(i))
+    #         post.save()
+    #     posts_num = thread.post_set.count()
+    #     response = self.client.get('{}?page=1'.format(self.url_1))
+    #     thread = response.context['threads'][0]
+    #     self.assertEqual(thread.last_page, 2)
+    #     self.assertEqual(thread.thread_pages, [1, 2])
+    #     self.assertEqual(thread.posts_num, posts_num)
 
-    def test_thread_last_post_att_is_thread(self):
-        """
-        Test "last_post" attribute that's added to every thread instance.
-        If thread contains posts, attribute should point to post that was created last;
-        if not - to thread itself.
-        """
-        # thread = models.Thread.objects.get(id=642)
-        url = reverse('forum:sub_forum', args=(2,))
-        response = self.client.get('{}?page=1'.format(url))
-        thread = response.context['threads'][0]
-        self.assertEqual(thread.last_post, thread)
+    # def test_thread_last_post_att_is_thread(self):
+    #     """
+    #     Test "last_post" attribute that's added to every thread instance.
+    #     If thread contains posts, attribute should point to post that was created last;
+    #     if not - to thread itself.
+    #     """
+    #     # thread = models.Thread.objects.get(id=642)
+    #     url = reverse('forum:sub_forum', args=(2,))
+    #     response = self.client.get('{}?page=1'.format(url))
+    #     thread = response.context['threads'][0]
+    #     self.assertEqual(thread.last_post, thread)
 
-    def test_thread_last_post_is_post(self):
-        thread = models.Thread.objects.get(id=651)
-        post = models.Post(thread=thread, full_text='Last post', user=self.user)
-        post.save()
-        url = reverse('forum:sub_forum', args=(2,))
-        response = self.client.get('{}?page=1'.format(url))
-        thread = response.context['threads'][0]
-        self.assertEqual(thread.last_post, post)
+    # def test_thread_last_post_is_post(self):
+    #     thread = models.Thread.objects.get(id=656)
+    #     post = models.Post(thread=thread, full_text='Last post', user=self.user)
+    #     post.save()
+    #     url = reverse('forum:sub_forum', args=(2,))
+    #     response = self.client.get('{}?page=1'.format(url))
+    #     thread = response.context['threads'][0]
+    #     last_post = response.context['thread_info']
+    #     self.assertEqual(last_post['last_post'], post)
 
     def test_attached_threads_on_first_page(self):
         """
@@ -196,10 +197,10 @@ class TestSubForumView(TestCase):
 
 
 class TestThreadView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     def test_returns_200(self):
-        response = self.client.get(reverse('forum:thread', args=(650,)))
+        response = self.client.get(reverse('forum:thread', args=(656,)))
         self.assertEqual(response.status_code, 200)
 
     def test_raises_400_when_nonexistent(self):
@@ -209,7 +210,7 @@ class TestThreadView(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_post_form_availability(self):
-        url = reverse('forum:thread', args=(650,))
+        url = reverse('forum:thread', args=(656,))
         form_html = '<form id="post" class="post" action="{}" method="post">'
         form_html = form_html.format(url)
         resp = self.client.get(url)
@@ -233,13 +234,13 @@ class TestThreadView(TestCase):
 
 
 class TestThreadViewPost(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.get(username='Lana')
         cls.data = {'full_text': 'Hello!'}
-        cls.url = reverse('forum:thread', args=(650,))
+        cls.url = reverse('forum:thread', args=(656,))
 
     def test_anonymous_redirected(self):
         """
@@ -290,18 +291,10 @@ class TestThreadViewPost(TestCase):
         Ensure, when user creates post, real html tags are escaped,
          and pseudo-tags for formatting are converted to html.
         """
-        # try:
-        #     import bs4
-        # except ImportError:
-        #     raise self.skipTest('Beautiful Soup is required for this test')
         self.client.force_login(self.user)
         resp = self.client.post(self.url,
                                 {'full_text': '<p>Hello!</p>, [b]Buddy[/b]'}, follow=True)
         post_id = models.Post.objects.order_by('-pub_date')[0].id
-        # try:
-        #     import lxml
-        #     soup = bs4.BeautifulSoup(resp.content, 'lxml')
-        # except ImportError:
         if lxml_imported:
             soup = bs4.BeautifulSoup(resp.content, 'lxml')
         else:
@@ -317,7 +310,7 @@ class TestThreadViewPost(TestCase):
         self.assertEqual(type(test_html), type(tag))
 
 class TestSignUp(TestCase):
-    fixtures = ['users.json']
+    fixtures = ['test_users.json']
 
     def setUp(self):
         self.data = {
@@ -407,7 +400,7 @@ class TestSignUp(TestCase):
 
 
 class TestEmailConfirmation(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     def setUp(self):
         self.data = {
@@ -426,13 +419,13 @@ class TestEmailConfirmation(TestCase):
         self.assertEqual(mail_inst.to[0], self.data['email'])
         self.assertEqual(mail_inst.from_email, settings.EMAIL_HOST_USER)
 
-    def test_random_keys_raise_404(self):
-        for i in range(10):
-            key = random.SystemRandom().getrandbits(32)
-            if key != self.user.userkey.key:
-                url = reverse('forum:email_confirmation', args=(self.user.id, key))
-                resp = self.client.get(url)
-                self.assertEqual(resp.status_code, 404)
+    # def test_random_keys_raise_404(self):
+    #     for i in range(10):
+    #         key = random.SystemRandom().getrandbits(32)
+    #         if key != self.user.userkey.key:
+    #             url = reverse('forum:email_confirmation', args=(self.user.id, key))
+    #             resp = self.client.get(url)
+    #             self.assertEqual(resp.status_code, 404)
 
     def test_email_confirmation_activates_user(self):
         self.assertFalse(self.user.is_active)
@@ -449,7 +442,7 @@ class TestEmailConfirmation(TestCase):
 
 
 class TestNewThreadView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     def setUp(self):
         self.user = User.objects.get(username='Lana')
@@ -538,139 +531,139 @@ class TestNewThreadView(TestCase):
         tag = soup.div
         self.assertEqual(type(test_html), type(tag))
 
-class TestSearchView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
-
-    def setUp(self):
-        self.data = {'search': '', 'user': '', 'search_by': 'pt', 'sort_by': 'p'}
-        self.url = reverse('forum:search')
-
-    def test_empty_fileds_error(self):
-        resp = self.client.get(self.url, self.data)
-        self.assertFormError(resp, 'form', None, validation_errors['empty_search'])
-
-
-    def test_bad_input_radiobutton_fields_errors(self):
-        self.data['search'] = 't'
-        fields = ('search_by', 'sort_by')
-        for f in fields:
-            self.data[f] = ''
-            resp = self.client.get(self.url, self.data)
-            self.assertFormError(resp, 'form', f, validation_errors['required'])
-        #test junk input
-        for f in fields:
-            self.data[f] = 'blabla'
-            resp = self.client.get(self.url, self.data)
-            error = validation_errors['invalid_choice'].format(self.data[f])
-            self.assertFormError(resp, 'form', f, error)
-
-
-    def test_raw_text_is_searched(self):
-        usr = User.objects.get(username='Lana')
-        sub = models.SubForum.objects.get(id=1)
-        strings = ('[b]Random[/b]', 'Random')
-        new_thread = models.Thread(user=usr, subforum=sub, thread_title='New Thread',
-                                   full_text=strings[0])
-        new_thread.save()
-        self.data['search'] = strings[0]
-        resp = self.client.get(self.url, self.data)
-        self.assertFalse(resp.context['query'])
-        self.data['search'] = strings[1]
-        resp = self.client.get(self.url, self.data)
-        self.assertQuerysetEqual(resp.context['query'], ['<Thread: New Thread>'])
-
-    def test_search_by_pt(self):
-        strings = {
-                      'west coast': [
-                          '<Post: Lana: Down on the West...>', '<Thread: Coast West>',
-                          '<Post: Lana: Down on the West...>', '<Thread: West Coast>',
-                      ],
-                      'test': [
-                          '<Thread: Test thread>', '<Post: admin: test post test...>'
-                      ],
-        }
-        for s, q in strings.items():
-            self.data['search'] = s
-            resp = self.client.get(self.url, self.data)
-            self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
-
-    def test_search_by_t(self):
-        strings = {
-            'west coast': ['<Thread: West Coast>', '<Thread: Coast West>'],
-            'test': ['<Thread: Test thread>'],
-        }
-        self.data['search_by'] = 't'
-        for s, q in strings.items():
-            self.data['search'] = s
-            resp = self.client.get(self.url, self.data)
-            self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
-
-    def test_search_by_p(self):
-        strings = {
-            'west coast': [
-                '<Post: Lana: Down on the West...>',
-                '<Post: Lana: Down on the West...>'
-            ],
-            'test': ['<Post: admin: test post test...>'],
-        }
-        self.data['search_by'] = 'p'
-        for s, q in strings.items():
-            self.data['search'] = s
-            resp = self.client.get(self.url, self.data)
-            self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
-
-    def test_search_by_username(self):
-        self.data['search'] = 't'
-        usernames = 'Lana', 'admin'
-        for name in usernames:
-            self.data['user'] = name
-            resp = self.client.get(self.url, self.data)
-            for item in resp.context['query']:
-                self.assertEqual(item.user.username, name)
-
-    def test_sort_by_date(self):
-        self.data['search'] = 't'
-        resp = self.client.get(self.url, self.data)
-        query = resp.context['query']
-        prev_item = query[0]
-        for item in query[1:]:
-            self.assertGreaterEqual(prev_item.pub_date, item.pub_date)
-            prev_item = item
-
-    def test_sory_by_rating(self):
-        self.data['search'] = 't'
-        self.data['sort_by'] = 'rt'
-        resp = self.client.get(self.url, self.data)
-        query = resp.context['query']
-        prev_item = query[0]
-        for item in query[1:]:
-            self.assertGreaterEqual(prev_item.rating, item.rating)
-            prev_item = item
-
-    def test_search_subforums(self):
-        self.data['search'] = 't'
-        sub_num = 1
-        self.data['subforums'] = sub_num
-        resp = self.client.get(self.url, self.data)
-        query = resp.context['query']
-        for item in query:
-            if hasattr(item, 'subforum'):
-                self.assertEqual(item.subforum.id, sub_num)
-            else:
-                self.assertEqual(item.thread.subforum.id, sub_num)
-        sub_num = (1, 2)
-        self.data['subforums'] = sub_num
-        resp = self.client.get(self.url, self.data)
-        query = resp.context['query']
-        for item in query:
-            if hasattr(item, 'subforum'):
-                self.assertIn(item.subforum.id, sub_num)
-            else:
-                self.assertIn(item.thread.subforum.id, sub_num)
+# class TestSearchView(TestCase):
+#     fixtures = ['testdata.json', 'test_users.json']
+#
+#     def setUp(self):
+#         self.data = {'search': '', 'user': '', 'search_by': 'pt', 'sort_by': 'p'}
+#         self.url = reverse('forum:search')
+#
+#     def test_empty_fileds_error(self):
+#         resp = self.client.get(self.url, self.data)
+#         self.assertFormError(resp, 'form', None, validation_errors['empty_search'])
+#
+#
+#     def test_bad_input_radiobutton_fields_errors(self):
+#         self.data['search'] = 't'
+#         fields = ('search_by', 'sort_by')
+#         for f in fields:
+#             self.data[f] = ''
+#             resp = self.client.get(self.url, self.data)
+#             self.assertFormError(resp, 'form', f, validation_errors['required'])
+#         #test junk input
+#         for f in fields:
+#             self.data[f] = 'blabla'
+#             resp = self.client.get(self.url, self.data)
+#             error = validation_errors['invalid_choice'].format(self.data[f])
+#             self.assertFormError(resp, 'form', f, error)
+#
+#
+#     def test_raw_text_is_searched(self):
+#         usr = User.objects.get(username='Lana')
+#         sub = models.SubForum.objects.get(id=1)
+#         strings = ('[b]Random[/b]', 'Random')
+#         new_thread = models.Thread(user=usr, subforum=sub, thread_title='New Thread',
+#                                    full_text=strings[0])
+#         new_thread.save()
+#         self.data['search'] = strings[0]
+#         resp = self.client.get(self.url, self.data)
+#         self.assertFalse(resp.context['query'])
+#         self.data['search'] = strings[1]
+#         resp = self.client.get(self.url, self.data)
+#         self.assertQuerysetEqual(resp.context['query'], ['<Thread: New Thread>'])
+#
+#     def test_search_by_pt(self):
+#         strings = {
+#                       'west coast': [
+#                           '<Post: Lana: Down on the West...>', '<Thread: Coast West>',
+#                           '<Post: Lana: Down on the West...>', '<Thread: West Coast>',
+#                       ],
+#                       'test': [
+#                           '<Thread: Test thread>', '<Post: admin: test post test...>'
+#                       ],
+#         }
+#         for s, q in strings.items():
+#             self.data['search'] = s
+#             resp = self.client.get(self.url, self.data)
+#             self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
+#
+#     def test_search_by_t(self):
+#         strings = {
+#             'west coast': ['<Thread: West Coast>', '<Thread: Coast West>'],
+#             'test': ['<Thread: Test thread>'],
+#         }
+#         self.data['search_by'] = 't'
+#         for s, q in strings.items():
+#             self.data['search'] = s
+#             resp = self.client.get(self.url, self.data)
+#             self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
+#
+#     def test_search_by_p(self):
+#         strings = {
+#             'west coast': [
+#                 '<Post: Lana: Down on the West...>',
+#                 '<Post: Lana: Down on the West...>'
+#             ],
+#             'test': ['<Post: admin: test post test...>'],
+#         }
+#         self.data['search_by'] = 'p'
+#         for s, q in strings.items():
+#             self.data['search'] = s
+#             resp = self.client.get(self.url, self.data)
+#             self.assertQuerysetEqual(resp.context['query'], q, ordered=False)
+#
+#     def test_search_by_username(self):
+#         self.data['search'] = 't'
+#         usernames = 'Lana', 'admin'
+#         for name in usernames:
+#             self.data['user'] = name
+#             resp = self.client.get(self.url, self.data)
+#             for item in resp.context['query']:
+#                 self.assertEqual(item.user.username, name)
+#
+#     def test_sort_by_date(self):
+#         self.data['search'] = 't'
+#         resp = self.client.get(self.url, self.data)
+#         query = resp.context['query']
+#         prev_item = query[0]
+#         for item in query[1:]:
+#             self.assertGreaterEqual(prev_item.pub_date, item.pub_date)
+#             prev_item = item
+#
+#     def test_sory_by_rating(self):
+#         self.data['search'] = 't'
+#         self.data['sort_by'] = 'rt'
+#         resp = self.client.get(self.url, self.data)
+#         query = resp.context['query']
+#         prev_item = query[0]
+#         for item in query[1:]:
+#             self.assertGreaterEqual(prev_item.rating, item.rating)
+#             prev_item = item
+#
+#     def test_search_subforums(self):
+#         self.data['search'] = 't'
+#         sub_num = 1
+#         self.data['subforums'] = sub_num
+#         resp = self.client.get(self.url, self.data)
+#         query = resp.context['query']
+#         for item in query:
+#             if hasattr(item, 'subforum'):
+#                 self.assertEqual(item.subforum.id, sub_num)
+#             else:
+#                 self.assertEqual(item.thread.subforum.id, sub_num)
+#         sub_num = (1, 2)
+#         self.data['subforums'] = sub_num
+#         resp = self.client.get(self.url, self.data)
+#         query = resp.context['query']
+#         for item in query:
+#             if hasattr(item, 'subforum'):
+#                 self.assertIn(item.subforum.id, sub_num)
+#             else:
+#                 self.assertIn(item.thread.subforum.id, sub_num)
 
 
 class TestProfileView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     def setUp(self):
         self.url = reverse('forum:profile')
@@ -697,7 +690,7 @@ class TestProfileView(TestCase):
         self.assertQuerysetEqual(resp.context['last_threads'], test_query)
 
     def test_last_posts(self):
-        thread = models.Thread.objects.get(id=650)
+        thread = models.Thread.objects.get(id=656)
         for i in range(10):
             p = models.Post(user=self.usr, thread=thread, full_text=str(i))
             p.save()
@@ -745,12 +738,12 @@ class TestProfileView(TestCase):
 
 
 class TestChangeThreadView(TestCase):
-    fixtures = ['users.json', 'forum_testdata.json']
+    fixtures = ['testdata.json', 'test_users.json']
 
     @classmethod
     def setUpTestData(cls):
         cls.usr = User.objects.get(username='Lana')
-        cls.thrd = models.Thread.objects.get(id=649)
+        cls.thrd = models.Thread.objects.get(id=656)
         cls.url = reverse('forum:edit_thread', args=(cls.thrd.id,))
         cls.data = {'thread_title': 'Hey', 'full_text': 'Dude'}
 
@@ -776,7 +769,7 @@ class TestChangeThreadView(TestCase):
         resp = self.client.post(self.url, self.data)
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['Location'], self.thrd.get_absolute_url())
-        thrd = models.Thread.objects.get(id=651)
+        thrd = models.Thread.objects.get(id=658)
         self.assertNotEqual(thrd.user.id, self.usr.id)
         url = reverse('forum:edit_thread', args=(thrd.id,))
         resp = self.client.post(url, self.data)
@@ -786,6 +779,8 @@ class TestChangeThreadView(TestCase):
         self.client.force_login(self.usr)
         self.assertNotEqual(self.thrd.thread_title, self.data['thread_title'])
         self.assertNotEqual(self.thrd.full_text, self.data['full_text'])
+        self.client.force_login(self.usr)
+        self.client.post(self.url, self.data)
         self.thrd.refresh_from_db()
         self.assertEqual(self.thrd.thread_title, self.data['thread_title'])
         self.assertEqual(self.thrd.full_text, self.data['full_text'])

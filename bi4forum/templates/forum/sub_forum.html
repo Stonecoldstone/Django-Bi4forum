@@ -1,0 +1,35 @@
+{% extends "forum/main_page.html" %}
+{% block title %}{{ sub.title }}{% endblock %}
+{% block head %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css'%}"/>
+{% endblock %}
+{% block links %}
+/<a href="{% url 'forum:category' sub.category.id %}">{{ sub.category.title }}</a>
+{% endblock %}
+{% block body %}
+<div id="body">
+    <h1>{{ sub.title }}</h1>
+    {% if request.user.is_authenticated %}
+    <div id="add"><a class="button" href="{% url 'forum:new_thread' sub.id %}">New thread</a></div>
+    {% endif %}
+    {% if attach_threads %}
+    <ul class="attached">
+    <li class="h3">Attached</li>
+        {% include 'forum/threadlist.html' with threads=attach_threads %}
+    </ul>
+    {% endif %}
+    <ul class="unattached">
+    <li class="h3">
+        Threads
+    </li>
+        {% if threads.exists %}
+        {% include 'forum/threadlist.html' with threads=threads %}
+        {% else %}
+        <li class="thread">There is no threads yet</li>
+        {% endif %}
+    </ul>
+</div>
+{% include 'forum/paginator.html' %}
+{% endblock %}
+

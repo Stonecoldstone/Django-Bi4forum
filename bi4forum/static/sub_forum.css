@@ -1,0 +1,97 @@
+
+ul.attached {
+list-style-type: none;
+margin: 0 0 30px;
+padding: 0;
+}
+ul.unattached {
+list-style-type: none;
+margin: 0 0 2%;
+padding: 0;
+}
+/*h1 {
+margin: 0 1%;
+}*/
+li.thread {
+border: 3px solid #A6650C;
+border-top:none;
+padding: 5px 20px;
+}
+li.h3 {
+border: 3px solid #A6650C;
+color: white;
+padding: 10px 20px;
+font-weight: bold;
+font-size: 20px;
+}
+div.thread, div.pages, div.posts, div.pic, div.somelinks {
+display: inline-block;
+vertical-align: middle;
+}
+div.threadinfo {
+display:inline-block;
+font-size: 14px;
+}
+div.thread {
+width: 30%;
+margin: 5px 0px;
+font-size: 14px;
+}
+a.main {
+font-size: 18px;
+}
+div.pages {
+margin-left: 10%;
+margin-right: 3%;
+width: 90px;
+}
+div.posts {
+font-size: 14px;
+width: 120px;
+margin: 10px 6% 10px 0;
+}
+
+div.threadinfo a {
+font-weight: normal;
+}
+div.pages a {
+font-size: 12px;
+}
+
+html, body, #body{
+height: 100%;
+}
+body > #body {
+height: auto;
+min-height: 100%;
+}
+
+
+#pagebar {
+clear: both;
+position: relative;
+margin-top: 15px;
+margin-bottom: 20px;
+text-align: center;
+height: 20px;
+z-index: 10;
+}
+
+
+/*span {
+display: inline-block;
+padding: 3px 5px;
+border: 2px solid rgb(147, 55, 237);
+border-radius: 1px;
+background-color: rgb(147, 55, 237);
+color: black;
+}*/
+
+
+#add a {
+margin: 10px 0 15px;
+width: 150px;
+padding: 8px;
+font-size: 18px;
+text-align: center;
+}

@@ -1,0 +1,79 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}{{ user.username }} | Profile{% endblock %}
+{% block head %}
+{% load staticfiles %}
+{% load forum_tags %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}"/>
+<script src="{% static 'spoiler.js' %}"></script>
+<script>
+    $(document).ready(function() {
+    if ($('form').length) {
+    $('html, body').animate({
+        scrollTop: $("form").offset().top
+    }, 0);
+    }
+    });
+</script>
+{{ form.media }}
+{% endblock %}
+{% block body %}
+<div class="content">
+    {% include 'forum/messages.html' %}
+    <ul class="subforum">
+        <li>
+            {% if user_profile.avatar %}
+            <img src="{{ user_profile.avatar.url }}"/>
+            {% else %}
+            <img src="{% static 'avatar.jpg' %}"/>
+            {% endif %}
+            <h2>Username: {{ user.username }}</h2>
+            {% if request.user.id == user.id %}
+            <p>Email: {{ user.email }}</p>
+            {% if email_confirm %}
+            {% include 'forum/registration/confirmation_form.html' with url='forum:profile' %}
+            {% endif %}
+        </li>
+        <li>
+            <div class="menu">
+                <a class="button" href="{% url 'forum:change_info' %}">Change information</a>
+                <a class="button" href="{% url 'forum:change_avatar' %}">Change avatar</a>
+                <a class="button" href="{% url 'forum:change_email' %}">Change email</a>
+                <a class="button" href="{% url 'forum:change_password' %}">Change password</a>
+            </div>
+        </li>
+        {% endif %}
+        </ul>
+        {% block info %}
+    <ul class="subforum">
+        <li class="info">
+            <h3>User information:</h3>
+            <p>First name: {{ user.first_name }}</p>
+            <p>Last name: {{ user.last_name }}</p>
+            <div class="text">Signature: {{ user_profile.signature|replace_markdown }}</div>
+        </li>
+        <li class="stats">
+            <h3>User statistics:</h3>
+            <p>Registration date: {{ user.date_joined }}</p>
+            <p>Last login: {{ user.last_login }}</p>
+            <ul class="threads">
+            <li class="header"><a href="{% url 'forum:search' %}?user={{ user }}&sort_by=p&search_by=t">Threads ({{ thread_count }})</a></li>
+                {% for t in last_threads %}
+                <li>
+                    <a href="{% url 'forum:thread' t.id %}?page=1">{{ t.thread_title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <ul class="threads">
+            <li class="header"><a href="{% url 'forum:search' %}?user={{ user }}&sort_by=p&search_by=p">Posts ({{ post_count }})</a></li>
+                {% for p in last_posts %}
+                <li>
+                    <a href="{{ p.get_absolute_url }}">{{ p.thread.thread_title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+    {% endblock info %}
+</div>
+{% endblock %}

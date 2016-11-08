@@ -1,18 +1,4 @@
-TODO:
-    remind users about email confirmation with AJAX instead of views and templates
-    fix all forms so there's no broken tags and make them uniform.
-    create widget with format buttons for posts etc
-    send login request with AJAX
-    add frontend form validation where necessary
-    WRITE TESTS
-    write docstrings and comments
-    add change, quote buttons and corresponding views, js
-    add password change, "forgot pass?" views, templates
-    add preview option when creating new post/thread
-    try to rewrite some views as class views
-    write some decorators, method decorators ( if condition true - 404, for example)
-
-
-
-
-
+Django Bi4forum
+Bi4forum is a simple forum application, which I was developing while learning django.
+It implements basic forum functions, such as search, custom markdown, user profile, listing subforums, threads, posts etc.
+It is hosted at https://Bi4.pythonanywhere.com, so you can check almost every feature of it.

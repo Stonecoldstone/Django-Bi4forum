@@ -1,0 +1,11 @@
+<div class="rating-bar">
+{% with users_liked=instance.users_liked.all %}
+<button class="like {% if request.user in users_liked %}liked{% endif %}"
+        data-id="{{ id }}" data-obj="{{ obj }}" data-action="like">+</button>
+{% endwith %}
+<span>{{ instance.get_rating }}</span>
+{% with users_disliked=instance.users_disliked.all %}
+<button class="dislike {% if request.user in users_disliked %}disliked{% endif %}"
+        data-id="{{ id }}" data-obj="{{ obj }}" data-action="dislike">-</button>
+{% endwith %}
+    </div>

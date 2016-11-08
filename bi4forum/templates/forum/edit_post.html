@@ -1,0 +1,13 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Edit Post{% endblock %}
+{% block head %}
+{{ form.media }}
+{% endblock %}
+{% block body %}
+<form id="post" class="post" action="" method="post">
+        {% csrf_token %}
+        {% include 'forum/post_form.html' %}
+    <a class="as_input button" href="{{ form.instance.get_absolute_url }}">Cancel</a>
+        <input class="excluded" type="submit" value="Save changes"/>
+    </form>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Search{% endblock %}
+{% block links %}{% endblock %}
+{% block head %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'sub_forum.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'thread.css' %}"/>
+
+{% endblock %}
+{% block body %}
+<form action="{% url 'forum:search' %}" method="get">
+    {% include 'forum/form.html' %}
+    <input class="excluded" type="submit" value="Search"/>
+</form>
+{% if query %}
+<script>
+    $(document).ready(function() {
+    $('html, body').animate({
+        scrollTop: $(".unattached").offset().top
+    }, 1000);
+    });
+</script>
+<ul class="unattached">
+    <li class="h3">{{ num_res }} result{{ num_res|pluralize }} were found</li>
+    {% for data in query %}
+    {% with data.object as data %}
+    <li class="thread ">
+<p class="secondary">
+    {{ data.pub_date|date:"N j, Y, H:i" }}
+    {% comment %}
+    by
+    <a href="{% url 'forum:profile' data.user.id%}" class="secondary">{{ data.user.username }}</a>
+    {% endcomment %}
+</p>
+        {% if data.thread %}
+<a href="{{ data.get_absolute_url }}">{{ data.thread.thread_title }}</a>
+        {% else %}
+        <a href="{{ data.get_absolute_url }}">{{ data.thread_title }}</a>
+        {% endif %}
+<p>{{ data.raw_text|truncatewords:100 }}</p>
+        </li>
+    {% endwith %}
+    {% endfor %}
+</ul>
+{% elif num_res == 0 %}
+    <p class="center">No results were found</p>
+
+{% endif %}
+{% if query %}
+<div id="pagebar">
+    {% if 1 not in pages_list %}
+    <a class="button" href="?page=1&{{ get }}">First</a>
+    {% endif %}
+    {% for n in pages_list %}
+    {% if num_page != n %}
+    <a class="button" href="?page={{ n }}&{{ get }}">{{ n }}</a>
+    {% else %}
+    <span class="page">{{ n }}</span>
+    {% endif %}
+    {% endfor %}
+    {% if last_page not in pages_list %}
+    <a class="button" href="?page={{ last_page }}&{{ get }}">Last ({{ last_page }})</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

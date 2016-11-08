@@ -1,0 +1,12 @@
+{% extends 'forum/main_page.html' %}
+{% block title %}Create new thread{% endblock %}
+{% block head %}
+{{ form.media }}
+{% endblock %}
+{% block body %}
+<form class="post" action="{% url 'forum:new_thread' sub_id %}" method="post">
+    {% csrf_token %}
+    {% include 'forum/form.html' %}
+    <input class="excluded" type="submit" value="Create thread"/>
+</form>
+{% endblock %}

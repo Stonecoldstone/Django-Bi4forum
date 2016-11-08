@@ -1,0 +1,357 @@
+/*colors:
+purple: rgb(147, 55, 237)
+blue: rgb(21, 126, 255)
+light-blue: rgb(64, 200, 255)
+*/
+body {
+background-color:black;
+color:white;
+font-family: "Arial";
+margin: 0 2%;
+line-height: 1.2;
+letter-spacing: 0.2px;
+}
+ul.subforum {
+list-style-type:none;
+margin: 0 0 5%;
+padding: 0;
+}
+ul.subforum li {
+border: 3px solid #A6650C;
+border-top:none;
+padding: 13px 0 10px 20px;
+}
+
+ul.subforum li.header {
+margin-bottom: 3px;
+display:block;
+background-color: #F09B00;
+border-color: #F09B00;
+}
+li.header a {
+display:block;
+font-size: 22px;
+color: black
+}
+ul.subforum li.header:hover {
+background-color: #40C8FF;
+border-color: #40C8FF;
+}
+a:link {
+font-weight:bold;
+text-decoration:none;
+color:orange;
+}
+
+p.history a {
+font-weight: normal;
+}
+
+a:visited {
+color:orange;
+}
+a:hover {
+color: #40C8FF;
+}
+ul.options {
+list-style-type: none;
+display: inline-block;
+padding:0;
+float:right;
+}
+div.header {
+margin-right: 0.9%;
+height: 60px;
+}
+ul.options li {
+float:left;
+padding: 0;
+margin-left: 10px;
+}
+
+li#profile a {
+float:right;
+}
+.options a {
+min-width: 60px;
+text-align: center;
+margin-left: 3px;
+margin-right: 5px;
+}
+/*img {
+border: 3px groove rgb(147, 55, 237);
+border-radius: 1px;
+}*/
+.subforum div {
+font-size: 14px;
+display: inline-block;
+vertical-align:middle;
+}
+div.subforum {
+width: 30%;
+margin-right: 20%;
+}
+div.stats {
+margin-right: 10%;
+width: 130px;
+}
+div.lastthread {
+width: 280px;
+}
+p.lastthread {
+margin-left: 5px;
+}
+.subforum a {
+font-size: 20px;
+}
+.lastthread a {
+font-size: 14px;
+}
+a.secondary {
+font-size: 14px;
+font-weight: normal;
+}
+.secondary {
+font-size: 14px;
+}
+p.lastthread {
+display: inline-block;
+}
+
+ul.subforum li:nth-of-type(2){
+border-top: 3px solid #A6650C;
+}
+/* Links that look like buttons styling */
+a.button, input[type=submit], span.page {
+display: inline-block;
+padding: 3px 8px;
+border: 2px solid #F09B00;
+border-radius: 1px;
+background-color: #F09B00;
+color: black;
+cursor: pointer;
+}
+span.page {
+border: 2px solid #A6650C;
+background-color: #A6650C;
+cursor: default;
+}
+a.button:hover, input[type=submit]:hover {
+background-color: #40C8FF;
+border-color: #40C8FF;
+transition: 0.3s;
+}
+form {
+margin: 10px 0;
+}
+/* form styling */
+input:not(.excluded), select {
+border: 3px solid #A6650C;
+border-radius: 1px;
+color: white;
+background-color: #141414;
+font-size: 16px;
+padding: 10px;;
+resize: none;
+width: 400px;
+}
+.post input:not(.excluded) {
+width: 90%;
+min-width: 400px;
+}
+
+input[type=file]{
+border: none;
+background-color: black;
+padding: 0;
+margin: 10px 0;
+
+}
+input:not(.excluded):focus {
+border-color: #40C8FF;
+transition: 0.3s;
+}
+input[type=submit], a.as_input {
+padding: 8px;
+margin: 7px 3px 0 0;
+font-size: 20px;
+font-weight: normal;
+text-align: center;
+}
+
+.post input {
+margin-bottom: 10px;
+}
+/* Form errors styling */
+/*table {
+text-align: left;}*/
+/*.tooltip {
+position:relative;
+display:inline-block;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100%;
+    background-color: rgba(255, 165, 0, 1);
+    color: black;
+    text-align: center;
+    padding: 5px 13px;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}*/
+form ul, form ul li {
+padding:0;
+margin: 0;
+}
+form ul li {
+list-style-type: none;
+margin-bottom: 10px;
+}
+li.error {
+margin: 0 0 0 0px;
+}
+label {
+width: 100px;
+margin-right: 10px;
+}
+.error, .errorlist {
+color: red;
+}
+img {
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+div {
+word-wrap:break-word;
+}
+.center {
+text-align: center;
+font-weight: bold;
+font-size: 20px;
+color: white;
+}
+.centered {
+width: 426px;
+margin: auto;
+margin-bottom: 30px;
+}
+.centered input[type=submit] {
+width: 425px;
+font-weight: bold;
+}
+.helptext {
+border: none;
+margin: 0;
+font-size: 14px;
+color: rgba(255, 255, 255, 0.5);
+width: 426px;
+}
+select{
+width: 100%;
+min-width: 400px;
+}
+#id_search_by li{
+display: inline-block;
+}
+input:not(.excluded), textarea {
+font-family: "Arial";
+line-height: 1.2;
+letter-spacing: 0.2px;
+}
+
+input[type=submit] {
+font-family: "Arial";
+letter-spacing: 0.2px;
+}
+
+input.like, input.dislike {
+line-height: 1;
+background-color: black;
+padding: 0;
+height: auto;
+margin: 0;
+font-size: 20px;
+font-weight: bold;
+width: 15px;
+border: none;
+color: orange;
+}
+.rating-bar {
+display: inline-block;
+margin: 0;
+}
+.like, .dislike {
+background-color: #F09B00;
+font-weight: bold;
+border: none;
+color: black;
+width: 20px;
+cursor: pointer;
+border-radius: 2px;
+font-size: 16px;
+}
+.liked {
+background-color: rgb(48, 255, 0);
+}
+.disliked {
+background-color: red;
+}
+input[type=radio], input[type=checkbox] {
+width: auto;
+}
+#id_sort_by li {
+display: inline-block;
+}
+#extra_search {
+margin-left: auto;
+margin-right: auto;
+display: block;
+}
+
+p.success {
+color: black;
+background-color: #40C8FF;
+/*background-color: rgb(48, 255, 0);*/
+margin-top: 0;
+font-weight: bold;
+padding: 3px 10px;
+border-radius: 1px;
+}
+a.close {
+float: right;
+color: black;
+}
+.fta_container {
+width: 90%;
+min-width: 600px;
+}
+.hidden {
+display:none;
+}
+.post_image {
+max-width: 800px;
+max-height: 600px;
+}
+.spoiler > p{
+display: none;
+background-color: #141414;
+margin: 0;
+padding: 10px;
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.spoiler {
+margin: 5px 0;
+}
+.spoiler > button {
+background-color: #141414;
+color: white;
+border: 1px solid rgba(255, 255, 255, 0.2);
+cursor: pointer;
+}
+button.opened_spoiler {
+border-bottom: none;
+}

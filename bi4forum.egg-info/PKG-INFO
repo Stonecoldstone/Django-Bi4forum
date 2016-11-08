@@ -1,0 +1,26 @@
+Metadata-Version: 1.1
+Name: bi4forum
+Version: 0.1
+Summary: A simple Django forum.
+Home-page: UNKNOWN
+Author: Stonecoldstone
+Author-email: UNKNOWN
+License: MIT License
+Description: Django Bi4forum
+        Bi4forum is a simple forum application, which I was developing while learning django.
+        It implements basic forum functions, such as search, custom markdown, user profile, listing subforums, threads, posts etc.
+        It is hosted at https://Bi4.pythonanywhere.com, so you can check almost every feature of it.
+        
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 1.9
+Classifier: Intended Audience :: Developers
+Classifier: License :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
