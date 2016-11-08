@@ -1,7 +1,7 @@
 from django.forms import Widget
 from django.forms.utils import flatatt
-from django.utils.encoding import force_text
 from django.utils.html import format_html
+
 
 class ForumWidget(Widget):
 

@@ -1,24 +1,27 @@
-from django.shortcuts import render, get_object_or_404, resolve_url
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404, JsonResponse, HttpResponse
-from .models import Category, SubForum, Thread, Post
-from . import functions
-from . import forms
-from django.contrib.auth import get_user_model, decorators,\
-    login as auth_login, authenticate, update_session_auth_hash
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView, FormView
 from django.conf import settings
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
-from django.utils.http import is_safe_url
-from django.views.decorators import cache, debug, csrf
-from django.views.decorators.http import require_POST
-from haystack.query import SearchQuerySet
 from django.contrib import messages
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import (authenticate, decorators, get_user_model,
+                                 update_session_auth_hash)
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.urlresolvers import reverse
+from django.http import (Http404, HttpResponse, HttpResponseRedirect,
+                         JsonResponse)
+from django.shortcuts import get_object_or_404, render, resolve_url
+from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.utils.http import is_safe_url
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators import cache, csrf, debug
+from django.views.decorators.http import require_POST
+from django.views.generic.edit import FormView, UpdateView
+from django.views.generic.list import ListView
+from haystack.query import SearchQuerySet
+
+from . import settings as forum_settings
+from . import forms, functions
+from .models import Category, Post, SubForum, Thread
 
 
 @decorators.login_required
@@ -80,7 +83,7 @@ def sub_forum(request, sub_id):
     num_page = request.GET.get('page')
     sub = get_object_or_404(SubForum, id=sub_id)
     threads = sub.thread_set.filter(is_attached=False)
-    paginator = Paginator(threads, settings.THREADS_ON_PAGE)
+    paginator = Paginator(threads, forum_settings.THREADS_ON_PAGE)
     try:
         page = paginator.page(num_page)
     except PageNotAnInteger:
@@ -109,7 +112,7 @@ def thread(request, thread_id):
     user = request.user
     if request.method == 'POST':
         if not user.is_authenticated():
-            return HttpResponseRedirect(reverse(settings.LOGIN_URL))
+            return HttpResponseRedirect(reverse(forum_settings.LOGIN_URL))
         if not user.is_active:
             return HttpResponseRedirect(reverse('forum:activation_required'))
         form = forms.Post(request.POST)
@@ -123,7 +126,7 @@ def thread(request, thread_id):
     posts = thrd.post_set.order_by('pub_date')
     posts = list(posts)
     posts.insert(0, thrd)
-    paginator = Paginator(posts, settings.POSTS_ON_PAGE)
+    paginator = Paginator(posts, forum_settings.POSTS_ON_PAGE)
     post_id = request.GET.get('postid')
     if post_id:
         try:
@@ -175,8 +178,8 @@ def sign_up(request, redirect_field_name='next'):
 
 
 @decorators.login_required
-@decorators.user_passes_test(functions.not_active, login_url=settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
-def registration_success(request, redirect_to=settings.LOGIN_REDIRECT_URL):
+@decorators.user_passes_test(functions.not_active, login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
+def registration_success(request, redirect_to=forum_settings.LOGIN_REDIRECT_URL):
     # have to replace this with ajax:
     if request.method == 'POST':
         email = request.user.email
@@ -191,7 +194,7 @@ def registration_success(request, redirect_to=settings.LOGIN_REDIRECT_URL):
 
 
 # doesn't need decorators because it raises 404 at invalid urls
-def email_confirmation(request, user_id, token, redirect_to=settings.LOGIN_REDIRECT_URL):
+def email_confirmation(request, user_id, token, redirect_to=forum_settings.LOGIN_REDIRECT_URL):
     user = get_object_or_404(get_user_model(), id=user_id)
     if functions.EmailTokenGenerator().check_token(user, token):
         redirect_to = resolve_url(redirect_to)
@@ -205,7 +208,7 @@ def email_confirmation(request, user_id, token, redirect_to=settings.LOGIN_REDIR
 
 
 @decorators.login_required
-@decorators.user_passes_test(functions.not_active, login_url=settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
+@decorators.user_passes_test(functions.not_active, login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
 def activation_required(request):
     if request.method == 'POST':
         email = request.user.email
@@ -262,7 +265,7 @@ class Login(FormView):
         redirect_to = self.request.POST.get('next',
                                        self.request.GET.get('next', ''))
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
-            redirect_to = reverse(settings.LOGIN_REDIRECT_URL)
+            redirect_to = reverse(forum_settings.LOGIN_REDIRECT_URL)
         return redirect_to
 
     def get(self, request, *args, **kwargs):
@@ -479,7 +482,7 @@ def search(request):
             if sort_by:
                 query = query.order_by(sort_by)
             query = query.load_all()
-            paginator = Paginator(query, settings.POSTS_ON_PAGE)
+            paginator = Paginator(query, forum_settings.POSTS_ON_PAGE)
             try:
                 page = paginator.page(num_page)
             except PageNotAnInteger:

@@ -1,12 +1,15 @@
+from textwrap import shorten
+
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from textwrap import shorten
-from .templatetags.forum_tags import replace_markdown
-from django.core.files import File
-from django.core.exceptions import ObjectDoesNotExist
+
 from . import functions
+from . import settings as forum_settings
+from .templatetags.forum_tags import replace_markdown
 
 
 class Category(models.Model):
@@ -20,29 +23,6 @@ class Category(models.Model):
         ordering = ['precedence']
         verbose_name_plural = 'categories'
 
-
-# class SubForumQuerySet(models.QuerySet):
-#
-#     def add_atts(self):
-#         self = self.annotate(
-#             thread_count=models.Count('thread', distinct=True),
-#             post_count=models.Count('thread__post',
-#                              distinct=True)
-#         )
-#         for entry in self:
-#             # entry.post_count -= entry.thread_count  # ocherednoy kostil'\ add custom manager or smth
-#             try:
-#                 entry.last_thread = entry.thread_set.all()[0]
-#             except IndexError:
-#                 entry.last_thread = None
-#                 entry.last_post = None
-#                 continue
-#             try:
-#                 entry.last_post = entry.last_thread.post_set.order_by('-pub_date')[0]
-#             except IndexError:
-#                 entry.last_post = entry.last_thread
-#         return self
-#     add_atts.queryset_only = True
 
 class SubForum(models.Model):
     title = models.CharField(max_length=200)
@@ -94,8 +74,6 @@ class ThreadPostAbstract(models.Model):
         res = self.users_liked.count() - self.users_disliked.count()
         return res
 
-
-
     def is_liked(self, user):
         query = self.users_liked.filter(id=user.id).exists()
         return query
@@ -106,8 +84,6 @@ class ThreadPostAbstract(models.Model):
 
     class Meta:
         abstract = True
-
-
 
 
 class Thread(ThreadPostAbstract):
@@ -133,8 +109,6 @@ class Thread(ThreadPostAbstract):
 
     class Meta:
         ordering = ['-post_add_date', '-pub_date']
-
-
 
 
 class Post(ThreadPostAbstract):
@@ -181,7 +155,7 @@ class UserProfile(models.Model):
             else:
                 orig = False
             if orig != self.avatar:
-                size = (200, 200)
+                size = forum_settings.AVATAR_SIZE
                 resized_img = functions.resize(size, bytes=self.avatar.read())
                 name = self.avatar.name
                 orig.delete(save=False)
@@ -191,8 +165,3 @@ class UserProfile(models.Model):
             # else:
             #     raise ValueError
         super(UserProfile, self).save(*args, **kwargs)
-
-
-
-
-

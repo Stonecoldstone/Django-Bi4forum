@@ -1,12 +1,15 @@
 from django import forms
+from django.contrib.auth import forms as auth_forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import \
+    password_validators_help_texts as pswd_help
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import RegexValidator
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth import get_user_model, forms as auth_forms
-from .models import Thread, Post, SubForum
-from django.contrib.auth.password_validation import password_validators_help_texts as pswd_help
-from .widgets import ForumWidget
 
+from . import settings as forum_settings
+from .models import Post, SubForum, Thread
+from .widgets import ForumWidget
 
 message = _('Username must consist of only lowercase or uppercase letters, numbers, '
             'or _@+.- characters.')
@@ -30,15 +33,13 @@ def validate_thread_title_unique(title):
     else:
         raise ValidationError(_('Thread with that name already exists.'), code='exists')
 
-FILE_MAX_SIZE = 10485760
-
 
 def validate_avatar(file):
     content_type = file.content_type.split('/')[0]
     if content_type != 'image':
         raise ValidationError(_('File is not an image'), code='wrong_type')
-    if file.size > FILE_MAX_SIZE:
-        raise ValidationError(_('File size should be less than 5 MB'), code='size_limit')
+    if file.size > forum_settings.FILE_MAX_SIZE:
+        raise ValidationError(_('File size should be less than 1 MB'), code='size_limit')
     return
 
 

@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Category, SubForum, Thread, Post, UserProfile
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+
+from .models import Category, Post, SubForum, Thread, UserProfile
 
 
 class PostInline(admin.StackedInline):

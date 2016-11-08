@@ -1,5 +1,6 @@
 from haystack import indexes
-from .models import Thread, Post
+
+from .models import Post, Thread
 
 
 class ThreadIndex(indexes.SearchIndex, indexes.Indexable):
@@ -28,4 +29,3 @@ class PostIndex(ThreadIndex):
 
     # def prepare_subforum(self, obj):
     #     return obj.subforum.title
-

@@ -1,13 +1,19 @@
-from django import template
+import math
 import re
+
+from django import template
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count
 from django.utils import html
 from django.utils.safestring import mark_safe
-from django.db.models import Count
-from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-import math
+
+from forum import settings as forum_settings
 
 register = template.Library()
+
+image_tag = r'<img src="\g<content>" style="max-width: {}; max-height: {};" alt="Image"/>'.\
+    format(forum_settings.IMG_SIZE[0], forum_settings.IMG_SIZE[1])
+
 
 def size_repl(match):
     content = match.group('content')
@@ -46,7 +52,7 @@ reg_list = [
         ],
         [r'\[center\](?P<content>.*?)\[/center\]', r'<p style="text-align:center">\g<content></p>'],
         [r'\[a=(?P<href>.*?)\](?P<content>.*?)\[/a\]', r'<a href="\g<href>">\g<content></a>'],
-        [r'\[img\](?P<content>.*?)\[/img\]', r'<img class="post_image" src="\g<content>" alt="Image"/>'],
+        [r'\[img\](?P<content>.*?)\[/img\]', image_tag],
         [
             r'\[video\](?P<content>.*?)\[/video\]',
             (r'<video width="560" height="420" controls>'
@@ -104,7 +110,7 @@ def get_subforum_info(subforum):
 @register.simple_tag
 def get_thread_info(thread):
     num_posts = thread.post_set.count()
-    range_val = math.ceil(num_posts / settings.POSTS_ON_PAGE) if num_posts > 0 else 1
+    range_val = math.ceil(num_posts / forum_settings.POSTS_ON_PAGE) if num_posts > 0 else 1
     thread_pages = list(range(1, range_val + 1))
     thread_pages = thread_pages[:3]
     last_page = range_val
@@ -118,4 +124,3 @@ def get_thread_info(thread):
         'last_page': last_page, 'thread_pages': thread_pages,
         'posts_num': posts_num, 'last_post': last_post
     }
-

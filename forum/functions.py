@@ -1,14 +1,14 @@
 import io
-from PIL import Image
+
+from django.conf import settings
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.files import File
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-import re
-from django.utils import html
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.template.loader import render_to_string
+from PIL import Image
+
+from . import settings as forum_settings
 
 
 def resize(size, prefix='', img=None, bytes=None):
@@ -78,13 +78,12 @@ def send_confirmation(request, user, email,
     link = request.build_absolute_uri(reverse('forum:email_confirmation',
                                               args=(user.id, token)))
     message_context = {
-        'username': user.username, 'forum_name': settings.FORUM_NAME, 'link': link,
+        'username': user.username, 'forum_name': forum_settings.FORUM_NAME, 'link': link,
     }
     subject_context = {
-        'forum_name': settings.FORUM_NAME
+        'forum_name': forum_settings.FORUM_NAME
     }
     subject = render_to_string(subject_template, subject_context)
     message = render_to_string(message_template, message_context)
     send_mail(subject, message, settings.EMAIL_HOST_USER,
               [email], fail_silently=False)
-
