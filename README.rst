@@ -5,4 +5,4 @@ It implements basic forum functions, such as search, custom markdown, user profi
 It is hosted at https://Bi4.pythonanywhere.com, so you can check almost every feature of it.
 It was built under python 3.5 and Django 1.9.
 Installation
-------------
+============
