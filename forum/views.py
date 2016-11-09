@@ -360,7 +360,7 @@ def profile(request, user_id=None):
     if request.method == 'POST':
         if user.is_active:
             raise Http404
-        functions.send_confirmation(request, user,
+        functions.send_confirmation(request, user, user.email,
                                     subject_template='forum/registration/email_subject.html',
                                     message_template='forum/registration/email_body.html')
         messages.success(request, 'Mail has been sent to {}'.format(user.email))
