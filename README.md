@@ -21,7 +21,7 @@ is used by some part of the forum. Probably you can omit the admin app, although
      ```
      $ pip install path-to-repo/dist/bi4forum-0.1.tar.gz
      ```
-3. In your project's **settings.py** file add **'forum'** into **INSTALLED_APPS**.
+3. In your project's **settings.py** file add **'forum.apps.ForumConfig'** into **INSTALLED_APPS**.
 4. In your project's **urls.py** file include urls from the forum into **urlpatterns** list, for example:  
 
      ```
