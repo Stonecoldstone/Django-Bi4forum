@@ -44,7 +44,8 @@ is used by some part of the forum. Probably you can omit the admin app, although
      ```
      AUTHENTICATION_BACKENDS``` = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
      ```
-6. Execute:  
+8.
+9. Execute:
 `$ python project-directory/manage.py migrate`
 
 ### Settings

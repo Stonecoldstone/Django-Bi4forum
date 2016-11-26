@@ -34,7 +34,7 @@
         <div class="somelinks">
             <a href="{{ thread_info.last_post.get_absolute_url }}">{{ thread_info.last_post.pub_date|date:"N j, Y, H:i" }}</a> by
             <a class="secondary" href="{% url 'forum:profile' thread_info.last_post.user.id %}">
-                {{ thread_info.last_post.user.username }}
+                {{ thread_info.last_post.user.username|truncatechars:14 }}
             </a>
         </div>
     </div>

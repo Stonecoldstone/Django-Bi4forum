@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.utils import html
 from django.utils.safestring import mark_safe
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from forum import settings as forum_settings
 
@@ -39,6 +41,18 @@ def color_repl(match):
         repl = content
     return repl
 
+def vid_repl(match):
+    content = match.group('content')
+    if 'embed_video' in settings.INSTALLED_APPS:
+        return render_to_string('forum/video/video.html', {'url': content})
+    else:
+        return r'''<video width="640" height="480" controls>
+                <source src="{0}" type=video/webm>
+                <source src="{0}" type=video/ogg>
+                <source src="{0}" type=video/mp4>
+                Your browser does not support the video tag.
+                </video>'''.format(content)
+
 reg_list = [
         [r'\[b\](?P<content>.*?)\[/b\]', r'<b>\g<content></b>'],
         [r'\[i\](?P<content>.*?)\[/i\]', r'<i>\g<content></i>'],
@@ -55,12 +69,14 @@ reg_list = [
         [r'\[img\](?P<content>.*?)\[/img\]', image_tag],
         [
             r'\[video\](?P<content>.*?)\[/video\]',
-            (r'<video width="560" height="420" controls>'
-             '<source src="\g<content>" type=video/webm>'
-             '<source src="\g<content>" type=video/ogg>'
-             '<source src="\g<content>" type=video/mp4>'
-             'Your browser does not support the video tag.'
-             '</video>')
+            # (r'<video width="560" height="420" controls>'
+            #  '<source src="\g<content>" type=video/webm>'
+            #  '<source src="\g<content>" type=video/ogg>'
+            #  '<source src="\g<content>" type=video/mp4>'
+            #  'Your browser does not support the video tag.'
+            #  '</video>')
+            # lambda x: render_to_string('forum/video/video.html', {'url': x.group('content')}),
+            vid_repl,
         ],
         [r'\[size=(?P<size>.*?)\](?P<content>.*?)\[/size\]', size_repl],
         [r'\[color=(?P<color>.*?)\](?P<content>.*?)\[/color\]', color_repl],
@@ -80,6 +96,7 @@ def replace_markdown(value, delete=False, autoescape=True):
                 repl = r'\g<content>'
             pattern = re.compile(pattern, (re.DOTALL | re.IGNORECASE))
             value = pattern.sub(repl, value)
+            print(value)
     return mark_safe(value)
 
 @register.simple_tag

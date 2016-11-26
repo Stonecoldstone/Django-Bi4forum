@@ -156,6 +156,7 @@ def thread(request, thread_id):
 
 
 @decorators.user_passes_test(functions.is_auth, login_url='forum:profile', redirect_field_name=None)
+@cache.never_cache
 def sign_up(request, redirect_field_name='next'):
     redirect_to = request.POST.get(redirect_field_name,
                                    (request.GET.get(redirect_field_name, '')))
@@ -178,7 +179,8 @@ def sign_up(request, redirect_field_name='next'):
 
 
 @decorators.login_required
-@decorators.user_passes_test(functions.not_active, login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
+@decorators.user_passes_test(functions.not_active,
+                             login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
 def registration_success(request, redirect_to=forum_settings.LOGIN_REDIRECT_URL):
     # have to replace this with ajax:
     if request.method == 'POST':
@@ -194,6 +196,7 @@ def registration_success(request, redirect_to=forum_settings.LOGIN_REDIRECT_URL)
 
 
 # doesn't need decorators because it raises 404 at invalid urls
+@cache.never_cache
 def email_confirmation(request, user_id, token, redirect_to=forum_settings.LOGIN_REDIRECT_URL):
     user = get_object_or_404(get_user_model(), id=user_id)
     if functions.EmailTokenGenerator().check_token(user, token):
@@ -208,7 +211,8 @@ def email_confirmation(request, user_id, token, redirect_to=forum_settings.LOGIN
 
 
 @decorators.login_required
-@decorators.user_passes_test(functions.not_active, login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
+@decorators.user_passes_test(functions.not_active,
+                             login_url=forum_settings.LOGIN_REDIRECT_URL, redirect_field_name=None)
 def activation_required(request):
     if request.method == 'POST':
         email = request.user.email
@@ -257,7 +261,6 @@ class Login(FormView):
                                                   redirect_field_name=None))
     @method_decorator(debug.sensitive_post_parameters('password'))
     @method_decorator(csrf.csrf_protect)
-    @method_decorator(cache.never_cache)
     def dispatch(self, request, *args, **kwargs):
         return super(Login, self).dispatch(request, *args, **kwargs)
 
@@ -299,24 +302,11 @@ class EditThread(UpdateView):
         form.instance.edit_date = timezone.now()
         return super(EditThread, self).form_valid(form)
 
+
 class EditPost(EditThread):
     model = Post
     form_class = forms.Post
     template_name = 'forum/edit_post.html'
-
-    # @method_decorator(decorators.login_required)
-    # @method_decorator(decorators.user_passes_test(functions.active,
-    #                                               login_url='forum:activation_required',
-    #                                               redirect_field_name=None))
-    # def dispatch(self, request, *args, **kwargs):
-    #     obj = self.get_object()
-    #     if self.request.user.id != obj.user.id:
-    #         raise Http404
-    #     return super(EditPost, self).dispatch(request, *args, **kwargs)
-    #
-    # def form_valid(self, form):
-    #     form.instance.edit_date = timezone.now()
-    #     return super(EditPost, self).form_valid(form)
 
 
 @decorators.login_required
@@ -331,7 +321,7 @@ def password_change(request):
             form.save()
             update_session_auth_hash(request, form.user)
             messages.success(request, 'Your password was changed.')
-            return HttpResponseRedirect(reverse('forum:change_password'))
+            return HttpResponseRedirect(reverse('forum:profile'))
     else:
         form = forms.PasswordChange(user=user)
     return render(request, 'forum/profile/change_password.html',
@@ -394,10 +384,10 @@ def change_avatar(request):
                 user_profile.avatar = upfile
                 user_profile.save()
                 messages.success(request, 'Your avatar was changed.')
-                return HttpResponseRedirect(reverse('forum:change_avatar'))
+                return HttpResponseRedirect(reverse('forum:profile'))
             except IOError:
-                form.add_error('upload_file', ValidationError(_('File type is not supported')
-                                                              , code='not_supported'))
+                form.add_error('upload_file', ValidationError(_('File type is not supported'),
+                                                              code='not_supported'))
     return render(request, 'forum/profile/change_avatar.html', {
         'form': form, 'user': user, 'user_profile': user_profile,
     })
@@ -424,7 +414,7 @@ def change_info(request):
             user_profile.signature = signature
             user_profile.save()
             messages.success(request, 'Your profile information was changed.')
-            return HttpResponseRedirect(reverse('forum:change_info'))
+            return HttpResponseRedirect(reverse('forum:profile'))
     context = {'user': user, 'user_profile': user_profile, 'form': form}
     return render(request, 'forum/profile/change_info.html', context)
 
@@ -446,6 +436,7 @@ def change_email(request):
                                         message_template=message)
             messages_text = 'Confirmation mail has been sent to {}'.format(new_email)
             messages.success(request, messages_text)
+            return HttpResponseRedirect(reverse('forum:profile'))
     else:
         form = forms.Email()
     context = {'user': user, 'user_profile': user.userprofile, 'form': form, 'sent': sent}

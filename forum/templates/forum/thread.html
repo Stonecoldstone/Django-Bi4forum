@@ -78,9 +78,11 @@ event.preventDefault();
                 {% endif %}
                 <br/>
                 <div class="text">{{ p.full_text|replace_markdown|linebreaksbr }}</div>
-                {% if p.user.userprofile.signature %}
-                <div class="sign">{{ p.signature|replace_markdown|linebreaksbr }}</div>
+                {% with signature=p.user.userprofile.signature %}
+                {% if signature %}
+                <div class="sign">{{ signature|replace_markdown|linebreaksbr }}</div>
                 {% endif %}
+                {% endwith %}
             </div>
             {% if p.user.id == request.user.id %}
             <div class="m_options">
