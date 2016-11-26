@@ -41,8 +41,8 @@ is used by some part of the forum. Probably you can omit the admin app, although
    * **MEDIA_ROOT**
    * **[Haystack settings](http://django-haystack.readthedocs.io/en/v2.5.0/settings.html)**
 6. If you're using Django 1.10, add to **AUTHENTICATION_BACKENDS** any backend that allows inactive users to log in. For example:
-     AUTHENTICATION_BACKENDS``` = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
-7. Execute:
+     ```AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']```
+7. Execute:  
 `$ python project-directory/manage.py migrate`
 
 ### Settings
