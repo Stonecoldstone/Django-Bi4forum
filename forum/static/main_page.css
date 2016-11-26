@@ -336,7 +336,7 @@ display:none;
 max-width: 800px;
 max-height: 600px;
 }
-.spoiler > p{
+.spoiler > div{
 display: none;
 background-color: #141414;
 margin: 0;
@@ -354,4 +354,8 @@ cursor: pointer;
 }
 button.opened_spoiler {
 border-bottom: none;
+}
+.msg_content {
+max-width: 100%;
+height: auto;
 }

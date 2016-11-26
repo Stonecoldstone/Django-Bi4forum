@@ -27,6 +27,9 @@ right: 30px;
 .message a {
 font-weight: normal;
 }
+a.nick {
+width: 220px;
+}
 .message span.date>a {
 font-size: 12px;
 }

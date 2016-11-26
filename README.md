@@ -63,6 +63,3 @@ The following are forum-specific settings and their defaults:
 **AVATAR_SIZE** - width and height that would be used to resize and crop an avatar before storing; specified in pixels  
     Default: `(200, 200)`
 
-**IMG_SIZE** - max-width and max-height css attributes, that would be applied to images in a text; specified in pixels  
-    Default: `(800, 600)`
-

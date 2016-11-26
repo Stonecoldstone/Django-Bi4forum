@@ -13,8 +13,7 @@ from forum import settings as forum_settings
 
 register = template.Library()
 
-image_tag = r'<img src="\g<content>" style="max-width: {}; max-height: {};" alt="Image"/>'.\
-    format(forum_settings.IMG_SIZE[0], forum_settings.IMG_SIZE[1])
+image_tag = r'<img class="msg_content" src="\g<content>" alt="Image"/>'
 
 
 def size_repl(match):
@@ -46,7 +45,7 @@ def vid_repl(match):
     if 'embed_video' in settings.INSTALLED_APPS:
         return render_to_string('forum/video/video.html', {'url': content})
     else:
-        return r'''<video width="640" height="480" controls>
+        return r'''<video width=480px height=360px controls>
                 <source src="{0}" type=video/webm>
                 <source src="{0}" type=video/ogg>
                 <source src="{0}" type=video/mp4>
@@ -82,7 +81,7 @@ reg_list = [
         [r'\[color=(?P<color>.*?)\](?P<content>.*?)\[/color\]', color_repl],
         [r'\[q\](?P<content>.*?)\[/q\]', r'<blockquote>\g<content></blockquote>'],
         [r'\[spoiler\](?P<content>.*?)\[/spoiler\]',
-         r'<div class="spoiler"><button>spoiler</button><p>\g<content></p></div>'],
+         r'<div class="spoiler"><button>spoiler</button><div>\g<content></div></div>'],
     ]
 
 

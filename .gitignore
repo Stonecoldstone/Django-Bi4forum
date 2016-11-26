@@ -4,4 +4,4 @@ manage.py
 text sample
 forum/__pycache__
 .coverage
-forum/uploads/*
+forum/uploads/
