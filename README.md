@@ -21,7 +21,7 @@ is used by some part of the forum. Probably you can omit the admin app, although
      ```
      $ pip install path-to-repo/dist/bi4forum-0.1.tar.gz
      ```
-3. In your project's **settings.py** file add **'forum'** into **INSTALLED_APPS**.
+3. In your project's **settings.py** file add **'forum.apps.ForumConfig'** into **INSTALLED_APPS**.
 4. In your project's **urls.py** file include urls from the forum into **urlpatterns** list, for example:  
 
      ```
@@ -40,12 +40,9 @@ is used by some part of the forum. Probably you can omit the admin app, although
    * **MEDIA_URL**
    * **MEDIA_ROOT**
    * **[Haystack settings](http://django-haystack.readthedocs.io/en/v2.5.0/settings.html)**
-7. If you're using Django 1.10, add to **AUTHENTICATION_BACKENDS** any backend that allows inactive users to log in. For example:  
-     ```
+6. If you're using Django 1.10, add to **AUTHENTICATION_BACKENDS** any backend that allows inactive users to log in. For example:
      AUTHENTICATION_BACKENDS``` = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
-     ```
-8.
-9. Execute:
+7. Execute:
 `$ python project-directory/manage.py migrate`
 
 ### Settings
@@ -69,20 +66,3 @@ The following are forum-specific settings and their defaults:
 **IMG_SIZE** - max-width and max-height css attributes, that would be applied to images in a text; specified in pixels  
     Default: `(800, 600)`
 
-**FORUM_NAME** - name of the forum, used in a couple of places  
-    Default: `'Bi4forum'`
-
-**FILE_MAX_SIZE** - max size for an avatar uploaded by user specified in bytes  
-    Default: `1024 * 1024` (1 Mb)
-
-**POSTS_ON_PAGE** - number of posts listed on a page  
-    Default: `20`
-
-**THREADS_ON_PAGE** - number of threads listed on a page  
-    Default: `20`
-
-**AVATAR_SIZE** - width and height that would be used to resize and crop an avatar before storing; specified in pixels  
-    Default: `(200, 200)`
-
-**IMG_SIZE** - max-width and max-height css attributes, that would be applied to images in a text; specified in pixels  
-    Default: `(800, 600)`
