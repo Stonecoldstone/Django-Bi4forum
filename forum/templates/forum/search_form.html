@@ -37,7 +37,7 @@
         {% else %}
         <a href="{{ data.get_absolute_url }}">{{ data.thread_title }}</a>
         {% endif %}
-<p>{{ data.raw_text|truncatewords:100 }}</p>
+<p class="search-text">{{ data.raw_text|truncatewords:100|linebreaksbr }}</p>
         </li>
     {% endwith %}
     {% endfor %}

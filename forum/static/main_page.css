@@ -225,7 +225,7 @@ color: red;
 img {
 border: 1px solid rgba(255, 255, 255, 0.2);
 }
-div {
+div, .search-text {
 word-wrap:break-word;
 }
 .center {

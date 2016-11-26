@@ -16,6 +16,7 @@ li.thread {
 border: 3px solid #A6650C;
 border-top:none;
 padding: 5px 20px;
+min-width: 500px;
 }
 li.h3 {
 border: 3px solid #A6650C;
@@ -23,6 +24,7 @@ color: white;
 padding: 10px 20px;
 font-weight: bold;
 font-size: 20px;
+min-width: 500px;
 }
 div.thread, div.pages, div.posts, div.pic, div.somelinks {
 display: inline-block;
